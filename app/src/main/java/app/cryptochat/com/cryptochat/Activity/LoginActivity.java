@@ -2,12 +2,19 @@ package app.cryptochat.com.cryptochat.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
+
+import app.cryptochat.com.cryptochat.Manager.AuthManager;
 import app.cryptochat.com.cryptochat.R;
+import app.cryptochat.com.cryptochat.Tools.Logger;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 import static android.text.TextUtils.isEmpty;
 import static android.util.Patterns.EMAIL_ADDRESS;
@@ -24,10 +31,17 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
         _email      = (EditText) findViewById(R.id.edit_email);
         _password   = (EditText) findViewById(R.id.edit_password);
         _btnLogin   = (Button) findViewById(R.id.button_log_in);
         _btnLogin.setEnabled(false);
+        _btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                authUser(_email.getText().toString(), _password.getText().toString());
+            }
+        });
 
         _emailChangeObservable =
                 RxTextView.textChanges(_email).skip(1).toFlowable(BackpressureStrategy.LATEST);
@@ -37,6 +51,14 @@ public class LoginActivity extends AppCompatActivity {
 
         _combineLatestEvents();
 
+    }
+
+
+    private void authUser(String login, String password){
+        AuthManager authManager = new AuthManager();
+        authManager.authUser(login, password, (s)->{
+
+        });
     }
 
     private void _combineLatestEvents() {

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="app.cryptochat.com.cryptochat">
+    <uses-permission android:name="android.permission.INTERNET" />
+
 
     <application
         android:name=".Common.CryptoChatApplication"
@@ -19,6 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="8db9608dbd1436120d824b4a87835d2ea3abab0a" />
     </application>
 
 </manifest>
