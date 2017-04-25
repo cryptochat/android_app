@@ -9,7 +9,11 @@ import android.widget.EditText;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
+import java.util.ArrayList;
+
 import app.cryptochat.com.cryptochat.Manager.AuthManager;
+import app.cryptochat.com.cryptochat.Manager.TransitionManager;
+import app.cryptochat.com.cryptochat.Models.UserModel;
 import app.cryptochat.com.cryptochat.R;
 import app.cryptochat.com.cryptochat.Tools.Logger;
 import io.reactivex.BackpressureStrategy;
@@ -30,7 +34,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
 
         _email      = (EditText) findViewById(R.id.edit_email);
         _password   = (EditText) findViewById(R.id.edit_password);
@@ -91,6 +94,5 @@ public class LoginActivity extends AppCompatActivity {
         return  !isEmpty(password) &&
                 password.length() > 6;
     }
-
 
 }

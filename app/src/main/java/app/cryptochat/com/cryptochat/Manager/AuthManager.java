@@ -9,7 +9,9 @@ import org.json.JSONObject;
 
 
 import java.net.ConnectException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import app.cryptochat.com.cryptochat.Models.CryptoKeyPairModel;
 import app.cryptochat.com.cryptochat.Models.UserModel;
@@ -29,6 +31,7 @@ import static app.cryptochat.com.cryptochat.Manager.TransportStatus.TransportSta
 
 public class AuthManager {
     private CryptoManager cryptoManager = new CryptoManager();
+    private TransitionManager transitionManager = new TransitionManager();
 
     public void authUser(String email, String password, Consumer<TransportStatus> hundlerResponse){
 
@@ -61,14 +64,20 @@ public class AuthManager {
                 .subscribe(cryptoModel -> {
                     cryptoManager.decrypt(cryptoModel.getData());
                     UserModel userModel = new Gson().fromJson(cryptoModel.getData().toString(), UserModel.class);
-                    saveUser(userModel);
+                    _saveUser(userModel);
                     hundlerResponse.accept(TransportStatusSuccess);
         }, (Throwable e) -> {
                     hundlerResponse.accept(TransportStatus.TransportStatusDefault.getStatus(e));
         });
     }
 
-        private void saveUser(UserModel userModel){
-        //TODO:
+    private void _saveUser(UserModel userModel) {
+        ArrayList<UserModel> userList = new ArrayList<>();
+        userList.add(userModel);
+        transitionManager.saveUser(userModel);
+    }
+
+    private void _deleteUser(String userUUID) {
+        transitionManager.deleteUserById(userUUID);
     }
 }

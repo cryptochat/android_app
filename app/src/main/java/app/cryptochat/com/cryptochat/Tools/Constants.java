@@ -6,4 +6,5 @@ package app.cryptochat.com.cryptochat.Tools;
 
 public class Constants {
     public static boolean isEncrypt = true;
+    public static final String UUID = "uuid";
 }
