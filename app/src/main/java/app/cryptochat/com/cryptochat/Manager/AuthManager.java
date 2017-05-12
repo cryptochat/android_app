@@ -1,8 +1,9 @@
 package app.cryptochat.com.cryptochat.Manager;
 
+import com.google.gson.Gson;
+
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import app.cryptochat.com.cryptochat.Models.CryptoKeyPairModel;
@@ -15,7 +16,7 @@ import static app.cryptochat.com.cryptochat.Manager.TransportStatus.TransportSta
 
 public class AuthManager {
     private CryptoManager cryptoManager = new CryptoManager();
-    private TransitionManager transitionManager = new TransitionManager();
+    private RealmDataManager _realmDataManager = new RealmDataManager();
 
     public void authUser(String email, String password, Consumer<TransportStatus> hundlerResponse){
 
@@ -29,6 +30,10 @@ public class AuthManager {
             CryptoKeyPairModel model =  cryptoManager.getCryptoKeyPairModel();
             _authUser(email, password, model.get_identifier(), hundlerResponse);
         }
+    }
+
+    public MyUserModel getMyUser(){
+        return _realmDataManager.getMyUserModel();
     }
 
     private void _authUser(String email, String password, String identifier, Consumer<TransportStatus> hundlerResponse){
@@ -47,11 +52,8 @@ public class AuthManager {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(cryptoModel -> {
                     cryptoManager.decrypt(cryptoModel.getCipherMessage());
-//                    MyUserModel myUserModel = new Gson().fromJson(cryptoModel.getCipherMessage().toString(), MyUserModel.class);
-//                    ChatListActivity chatListActivity = new ChatListActivity();
-//                    chatListActivity.getChatList("s90pz1Pa_JoRcGWZs5SIPesUMLVJpv6BuyADreLVP_0", hundlerResponse);
-
-//                    _saveUser(myUserModel);
+                    MyUserModel myUserModel = new Gson().fromJson(cryptoModel.getCipherMessage().get("user").toString(), MyUserModel.class);
+                    _saveUser(myUserModel);
                     hundlerResponse.accept(TransportStatusSuccess);
         }, (Throwable e) -> {
                     hundlerResponse.accept(TransportStatus.TransportStatusDefault.getStatus(e));
@@ -59,10 +61,16 @@ public class AuthManager {
     }
 
     private void _saveUser(MyUserModel myUserModel) {
-        transitionManager.saveMyUser(myUserModel);
+        _realmDataManager.createMyUser(myUserModel.getUUID(),
+                myUserModel.getEmail(),
+                myUserModel.getUserName(),
+                myUserModel.getFirstName(),
+                myUserModel.getLastName(),
+                myUserModel.getToken());
     }
 
     private void _deleteUser(String userUUID) {
-        transitionManager.deleteMyUserById(userUUID);
+
     }
+
 }

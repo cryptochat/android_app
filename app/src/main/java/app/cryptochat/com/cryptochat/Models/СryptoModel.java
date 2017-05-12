@@ -1,5 +1,7 @@
 package app.cryptochat.com.cryptochat.Models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.HashMap;
 
 /**
@@ -7,15 +9,16 @@ import java.util.HashMap;
  */
 
 public class СryptoModel {
-    private String cipher_message;
+    @SerializedName("cipher_message")
+    private HashMap cipherMessage;
     private String identifier;
 
-    public String getCipherMessage() {
-        return cipher_message;
+    public HashMap getCipherMessage() {
+        return cipherMessage;
     }
 
-    public void setCipherMessage(String cipher_message) {
-        this.cipher_message = cipher_message;
+    public void setCipherMessage(HashMap cipher_message) {
+        this.cipherMessage = cipher_message;
     }
 
     public String getIdentifier() {

@@ -29,6 +29,15 @@ public class MyUserModel {
         this.token = token;
     }
 
+    public MyUserModel(MyUserModelRealm myUserModelRealm){
+        this.uuid = myUserModelRealm.getUUID();
+        this.email = myUserModelRealm.getEmail();
+        this.username = myUserModelRealm.getUserName();
+        this.first_name = myUserModelRealm.getFirstName();
+        this.last_name = myUserModelRealm.getLastName();
+        this.token = myUserModelRealm.getToken();
+    }
+
     public String getUUID() {
         return uuid;
     }

@@ -2,10 +2,13 @@ package app.cryptochat.com.cryptochat.Manager;
 
 import java.util.ArrayList;
 
+import app.cryptochat.com.cryptochat.Models.MyUserModel;
 import app.cryptochat.com.cryptochat.Models.MyUserModelRealm;
+import app.cryptochat.com.cryptochat.Models.UserModel;
 import app.cryptochat.com.cryptochat.Models.UserModelRealm;
 import app.cryptochat.com.cryptochat.Tools.Constants;
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by amudarisova on 25.04.17.
@@ -37,6 +40,17 @@ public class RealmDataManager {
             myUserModelRealm.setLastName(lastName);
             myUserModelRealm.setToken(token);
         });
+    }
+
+
+    public MyUserModel getMyUserModel(){
+        RealmResults<MyUserModelRealm> realmResults = _realm.where(MyUserModelRealm.class).findAll();
+        if(realmResults.size() == 0){
+            return null;
+        }
+        MyUserModelRealm userModelRealm = realmResults.first();
+
+        return new MyUserModel(userModelRealm);
     }
 
 

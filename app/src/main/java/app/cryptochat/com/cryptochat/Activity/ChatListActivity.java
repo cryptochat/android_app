@@ -2,6 +2,7 @@ package app.cryptochat.com.cryptochat.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.cryptochat.com.cryptochat.Manager.APIManager;
+import app.cryptochat.com.cryptochat.Manager.AuthManager;
 import app.cryptochat.com.cryptochat.Manager.CryptoManager;
 import app.cryptochat.com.cryptochat.Manager.RequestInterface;
 import app.cryptochat.com.cryptochat.Manager.TransitionManager;
@@ -19,8 +21,10 @@ import app.cryptochat.com.cryptochat.Manager.TransportStatus;
 import app.cryptochat.com.cryptochat.Models.ChatModel;
 import app.cryptochat.com.cryptochat.Models.CipherMessageResponse;
 import app.cryptochat.com.cryptochat.Models.CryptoKeyPairModel;
+import app.cryptochat.com.cryptochat.Models.MyUserModel;
 import app.cryptochat.com.cryptochat.Models.UserModel;
 import app.cryptochat.com.cryptochat.R;
+import app.cryptochat.com.cryptochat.Tools.Logger;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -45,7 +49,9 @@ public class ChatListActivity extends AppCompatActivity {
     public void getChatList(String token) {
         Consumer<TransportStatus> hundlerResponse = null;
         CryptoKeyPairModel model = cryptoManager.getCryptoKeyPairModel();
-        _getChatList(token, "76c93ee0-20e3-4340-ab7b-ef1c2371dcda", hundlerResponse);
+        AuthManager authManager = new AuthManager();
+        MyUserModel userModel = authManager.getMyUser();
+        _getChatList(userModel.getToken(), "76c93ee0-20e3-4340-ab7b-ef1c2371dcda", hundlerResponse);
     }
 
 
@@ -92,6 +98,8 @@ public class ChatListActivity extends AppCompatActivity {
 //                    status.accept(TransportStatusSuccess);
 //                }, (Throwable e) -> {
 //                    status.accept(TransportStatus.TransportStatusDefault.getStatus(e));
+                },(Throwable e) -> {
+                    Logger.l(e.toString());
                 });
     }
 

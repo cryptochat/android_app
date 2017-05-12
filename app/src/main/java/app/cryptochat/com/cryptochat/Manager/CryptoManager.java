@@ -104,7 +104,7 @@ public class CryptoManager {
         //TODO: шифрование
     }
 
-    public void decrypt(String hashMap){
+    public void decrypt(HashMap hashMap){
         if(Constants.isEncrypt){
             return;
         }

@@ -14,7 +14,11 @@
         android:theme="@style/AppTheme">
         <activity android:name=".Activity.MainActivity"></activity>
         <activity android:name=".Activity.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <meta-data
@@ -22,11 +26,7 @@
             android:value="8db9608dbd1436120d824b4a87835d2ea3abab0a" />
 
         <activity android:name=".Activity.ChatListActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
