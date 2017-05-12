@@ -1,5 +1,6 @@
 package app.cryptochat.com.cryptochat.Manager;
 
+import app.cryptochat.com.cryptochat.Models.MyUserModel;
 import app.cryptochat.com.cryptochat.Models.UserModel;
 
 /**
@@ -9,16 +10,23 @@ import app.cryptochat.com.cryptochat.Models.UserModel;
 public class TransitionManager {
     private RealmDataManager _realmDataManager = new RealmDataManager();
 
-    public void saveUser(UserModel userModel) {
-        _realmDataManager.createUser(userModel.getUUID(),
-                                     userModel.getEmail(),
-                                     userModel.getUserName(),
-                                     userModel.getFirstName(),
-                                     userModel.getLastName(),
-                                     userModel.getToken());
+    public void saveMyUser(MyUserModel myUserModel) {
+        _realmDataManager.createMyUser(myUserModel.getUUID(),
+                                     myUserModel.getEmail(),
+                                     myUserModel.getUserName(),
+                                     myUserModel.getFirstName(),
+                                     myUserModel.getLastName(),
+                                     myUserModel.getToken());
     }
 
-    public void deleteUserById(String userUUID) {
-        _realmDataManager.deleteUserById(userUUID);
+    public void deleteMyUserById(String userUUID) {
+        _realmDataManager.deleteMyUserById(userUUID);
+    }
+
+    public void saveUser(UserModel userModel) {
+        _realmDataManager.createUser(userModel.getId(),
+                                   userModel.getUserName(),
+                                   userModel.getFirstName(),
+                                   userModel.getLastName());
     }
 }

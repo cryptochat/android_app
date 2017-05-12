@@ -7,15 +7,15 @@ import java.util.HashMap;
  */
 
 public class СryptoModel {
-    private HashMap<String, String> data;
+    private String cipher_message;
     private String identifier;
 
-    public HashMap<String, String> getData() {
-        return data;
+    public String getCipherMessage() {
+        return cipher_message;
     }
 
-    public void setData(HashMap<String, String> data) {
-        this.data = data;
+    public void setCipherMessage(String cipher_message) {
+        this.cipher_message = cipher_message;
     }
 
     public String getIdentifier() {

@@ -6,19 +6,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
-import java.util.ArrayList;
-
 import app.cryptochat.com.cryptochat.Manager.AuthManager;
-import app.cryptochat.com.cryptochat.Manager.TransitionManager;
-import app.cryptochat.com.cryptochat.Models.UserModel;
 import app.cryptochat.com.cryptochat.R;
-import app.cryptochat.com.cryptochat.Tools.Logger;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 
 import static android.text.TextUtils.isEmpty;
 import static android.util.Patterns.EMAIL_ADDRESS;

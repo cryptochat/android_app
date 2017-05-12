@@ -40,7 +40,7 @@ android {
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
-        debug{
+        debug {
 
         }
     }
@@ -53,16 +53,6 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.1'
-    compile 'org.whispersystems:curve25519-android:0.3.1'
-    compile 'io.reactivex.rxjava2:rxjava:2.0.1'
-    compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
-    compile "io.reactivex.rxjava2:rxandroid:2.0.1"
-    testCompile 'junit:junit:4.12'
-    compile 'com.squareup.retrofit2:retrofit:2.2.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
         transitive = true;
     }
@@ -71,6 +61,16 @@ dependencies {
     }
 
 
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.1'
+    compile 'org.whispersystems:curve25519-android:0.3.1'
+    compile 'io.reactivex.rxjava2:rxjava:2.0.1'
+    compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+    testCompile 'junit:junit:4.12'
 }
 
 crashlytics {

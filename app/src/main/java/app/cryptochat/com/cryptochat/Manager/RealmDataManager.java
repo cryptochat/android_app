@@ -1,5 +1,8 @@
 package app.cryptochat.com.cryptochat.Manager;
 
+import java.util.ArrayList;
+
+import app.cryptochat.com.cryptochat.Models.MyUserModelRealm;
 import app.cryptochat.com.cryptochat.Models.UserModelRealm;
 import app.cryptochat.com.cryptochat.Tools.Constants;
 import io.realm.Realm;
@@ -13,7 +16,7 @@ public class RealmDataManager {
 
 
     /**
-     *  Добавление user'a
+     *  Добавление my user'a
      *
      * @param uuid
      * @param email
@@ -23,30 +26,45 @@ public class RealmDataManager {
      * @param token
      */
 
-    public void createUser(final String uuid, final String email, final String userName,
-                           final String firstName, final String lastName, final String token) {
+    public void createMyUser(final String uuid, final String email, final String userName,
+                             final String firstName, final String lastName, final String token) {
         _realm.executeTransaction(realm -> {
-            UserModelRealm userModelRealm = realm.createObject(UserModelRealm.class);
-            userModelRealm.setUUID(uuid);
-            userModelRealm.setEmail(email);
-            userModelRealm.setUserName(userName);
-            userModelRealm.setFirstName(firstName);
-            userModelRealm.setLastName(lastName);
-            userModelRealm.setToken(token);
+            MyUserModelRealm myUserModelRealm = realm.createObject(MyUserModelRealm.class);
+            myUserModelRealm.setUUID(uuid);
+            myUserModelRealm.setEmail(email);
+            myUserModelRealm.setUserName(userName);
+            myUserModelRealm.setFirstName(firstName);
+            myUserModelRealm.setLastName(lastName);
+            myUserModelRealm.setToken(token);
         });
     }
 
 
     /**
-     * Удаление user'a
+     * Удаление my user'a
      * @param userUUID
      */
-    public void deleteUserById(final String userUUID) {
+    public void deleteMyUserById(final String userUUID) {
         _realm.executeTransaction(realm -> {
-            UserModelRealm userModelRealm = realm.where(UserModelRealm.class).equalTo(Constants.UUID, userUUID).findFirst();
-            if (userModelRealm != null) {
-                userModelRealm.deleteFromRealm();
+            MyUserModelRealm myUserModelRealm = realm.where(MyUserModelRealm.class).equalTo(Constants.UUID, userUUID).findFirst();
+            if (myUserModelRealm != null) {
+                myUserModelRealm.deleteFromRealm();
             }
         });
     }
+
+
+
+    public void createUser(final int id, final String userName,
+                           final String firstName, final String lastName) {
+        _realm.executeTransaction(realm -> {
+            UserModelRealm userModelRealm = realm.createObject(UserModelRealm.class);
+            userModelRealm.setId(id);
+            userModelRealm.setUserName(userName);
+            userModelRealm.setFirstName(firstName);
+            userModelRealm.setLastName(lastName);
+
+        });
+    }
+
 }

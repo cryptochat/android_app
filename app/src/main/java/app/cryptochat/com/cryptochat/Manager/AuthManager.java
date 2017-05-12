@@ -1,32 +1,16 @@
 package app.cryptochat.com.cryptochat.Manager;
 
-import com.crashlytics.android.Crashlytics;
-import com.google.gson.Gson;
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
-
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import app.cryptochat.com.cryptochat.Models.CryptoKeyPairModel;
-import app.cryptochat.com.cryptochat.Models.UserModel;
-import app.cryptochat.com.cryptochat.Models.СryptoModel;
-import app.cryptochat.com.cryptochat.Tools.Logger;
-import io.reactivex.Observable;
+import app.cryptochat.com.cryptochat.Models.MyUserModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-import static app.cryptochat.com.cryptochat.Manager.TransportStatus.TransportStatusError;
-import static app.cryptochat.com.cryptochat.Manager.TransportStatus.TransportStatusNotInternet;
 import static app.cryptochat.com.cryptochat.Manager.TransportStatus.TransportStatusSuccess;
 
 public class AuthManager {
@@ -62,22 +46,23 @@ public class AuthManager {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(cryptoModel -> {
-                    cryptoManager.decrypt(cryptoModel.getData());
-                    UserModel userModel = new Gson().fromJson(cryptoModel.getData().toString(), UserModel.class);
-                    _saveUser(userModel);
+                    cryptoManager.decrypt(cryptoModel.getCipherMessage());
+//                    MyUserModel myUserModel = new Gson().fromJson(cryptoModel.getCipherMessage().toString(), MyUserModel.class);
+//                    ChatListActivity chatListActivity = new ChatListActivity();
+//                    chatListActivity.getChatList("s90pz1Pa_JoRcGWZs5SIPesUMLVJpv6BuyADreLVP_0", hundlerResponse);
+
+//                    _saveUser(myUserModel);
                     hundlerResponse.accept(TransportStatusSuccess);
         }, (Throwable e) -> {
                     hundlerResponse.accept(TransportStatus.TransportStatusDefault.getStatus(e));
         });
     }
 
-    private void _saveUser(UserModel userModel) {
-        ArrayList<UserModel> userList = new ArrayList<>();
-        userList.add(userModel);
-        transitionManager.saveUser(userModel);
+    private void _saveUser(MyUserModel myUserModel) {
+        transitionManager.saveMyUser(myUserModel);
     }
 
     private void _deleteUser(String userUUID) {
-        transitionManager.deleteUserById(userUUID);
+        transitionManager.deleteMyUserById(userUUID);
     }
 }
