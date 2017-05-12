@@ -1,15 +1,12 @@
 package app.cryptochat.com.cryptochat.Models;
 
-import com.google.gson.annotations.SerializedName;
+import io.realm.RealmObject;
 
 /**
- * Created by romankov on 08.04.17.
+ * Created by amudarisova on 25.04.17.
  */
 
-public class UserModel {
-    private class UserField{
-
-    }
+public class UserModelRealm extends RealmObject {
 
     private String uuid;
     private String email;
@@ -18,10 +15,10 @@ public class UserModel {
     private String last_name;
     private String token;
 
-    private UserField userField;
-    private UserField stringData;
+    public UserModelRealm() {
+    }
 
-    public UserModel(String uuid, String email, String username, String first_name, String last_name, String token) {
+    UserModelRealm(String uuid, String email, String username, String first_name, String last_name, String token) {
         this.uuid = uuid;
         this.email = email;
         this.username = username;
@@ -77,8 +74,4 @@ public class UserModel {
     public void setToken(String token) {
         this.token = token;
     }
-
-
-
-
 }
