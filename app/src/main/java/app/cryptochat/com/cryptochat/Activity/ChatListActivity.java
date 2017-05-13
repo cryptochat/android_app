@@ -23,9 +23,9 @@ import app.cryptochat.com.cryptochat.Models.CryptoKeyPairModel;
 import app.cryptochat.com.cryptochat.Models.MyUserModel;
 import app.cryptochat.com.cryptochat.Models.UserModel;
 import app.cryptochat.com.cryptochat.R;
+import app.cryptochat.com.cryptochat.Tools.Consumer;
 import app.cryptochat.com.cryptochat.Tools.Logger;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class ChatListActivity extends AppCompatActivity {
@@ -47,13 +47,14 @@ public class ChatListActivity extends AppCompatActivity {
     }
 
     public void getChatList(String token) {
-        Consumer<TransportStatus> hundlerResponse = null;
         CryptoKeyPairModel model = cryptoManager.getCryptoKeyPairModel();
-        _getChatList(token, model.get_identifier(), hundlerResponse);
+        _getChatList(token, model.get_identifier(), (ArrayList list, TransportStatus status) -> {
+            Logger.l("");
+        });
     }
 
 
-    private void _getChatList(String token, String identifier, Consumer<TransportStatus> status) {
+    private void _getChatList(String token, String identifier, Consumer<ArrayList,TransportStatus> response) {
         RequestInterface requestInterface = APIManager.INSTANCE.getRequestInterface();
         HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("token", token);
@@ -83,14 +84,17 @@ public class ChatListActivity extends AppCompatActivity {
                         String json = new Gson().toJson(map);
 
                         UserModel userModel = new Gson().fromJson(chats.get("interlocutor").toString(), UserModel.class);
-                        _saveUser(userModel);
+                       // _saveUser(userModel);
 
                         ChatModel chatModel = new Gson().fromJson(json, ChatModel.class);
-                        _saveChat(chatModel);
+                       // _saveChat(chatModel);
                     }
+                    // Сюда передать массив ChatModel, внутри которых должна быть UserModel
+                    response.accept(null, TransportStatus.TransportStatusSuccess);
+
 
                 },(Throwable e) -> {
-                    Logger.l(e.toString());
+                    response.accept(null ,TransportStatus.TransportStatusDefault.getStatus(e));
                 });
     }
 
