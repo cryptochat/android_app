@@ -2,6 +2,8 @@ package app.cryptochat.com.cryptochat.Manager;
 
 import java.util.ArrayList;
 
+import app.cryptochat.com.cryptochat.Models.ChatModel;
+import app.cryptochat.com.cryptochat.Models.ChatModelRealm;
 import app.cryptochat.com.cryptochat.Models.MyUserModel;
 import app.cryptochat.com.cryptochat.Models.MyUserModelRealm;
 import app.cryptochat.com.cryptochat.Models.UserModel;
@@ -16,6 +18,7 @@ import io.realm.RealmResults;
 
 public class RealmDataManager {
     private Realm _realm = Realm.getDefaultInstance();
+    private UserModelRealm _userModelRealm;
 
 
     /**
@@ -43,6 +46,10 @@ public class RealmDataManager {
     }
 
 
+    /**
+     *  Получение my user'a
+     * @return
+     */
     public MyUserModel getMyUserModel(){
         RealmResults<MyUserModelRealm> realmResults = _realm.where(MyUserModelRealm.class).findAll();
         if(realmResults.size() == 0){
@@ -68,17 +75,55 @@ public class RealmDataManager {
     }
 
 
-
+    /**
+     * Сохранение user'a
+     * @param id
+     * @param userName
+     * @param firstName
+     * @param lastName
+     */
     public void createUser(final int id, final String userName,
                            final String firstName, final String lastName) {
         _realm.executeTransaction(realm -> {
-            UserModelRealm userModelRealm = realm.createObject(UserModelRealm.class);
-            userModelRealm.setId(id);
-            userModelRealm.setUserName(userName);
-            userModelRealm.setFirstName(firstName);
-            userModelRealm.setLastName(lastName);
-
+            _userModelRealm = realm.createObject(UserModelRealm.class);
+            _userModelRealm.setId(id);
+            _userModelRealm.setUserName(userName);
+            _userModelRealm.setFirstName(firstName);
+            _userModelRealm.setLastName(lastName);
         });
+    }
+
+
+    /**
+     * Сохранение чата
+     * @param lastMessage
+     * @param isRead
+     * @param fromMe
+     */
+    public void createChat(final String lastMessage, final boolean isRead, final boolean fromMe) {
+        _realm.executeTransaction(realm -> {
+            ChatModelRealm chatModelRealm = realm.createObject(ChatModelRealm.class);
+            chatModelRealm.setLastMessage(lastMessage);
+            chatModelRealm.setRead(isRead);
+            chatModelRealm.setFromMe(fromMe);
+            chatModelRealm.setUserId(_userModelRealm.getId());
+        });
+    }
+
+
+    /**
+     * Получение списка чатов
+     * @return
+     */
+    public ArrayList<ChatModel> getChatList() {
+        RealmResults<ChatModelRealm> results = _realm.where(ChatModelRealm.class).findAll();
+        ArrayList<ChatModel> chatList = new ArrayList<>();
+
+        for (ChatModelRealm modelRealm : results) {
+            ChatModel chatModel = new ChatModel(modelRealm);
+            chatList.add(chatModel);
+        }
+        return chatList;
     }
 
 }

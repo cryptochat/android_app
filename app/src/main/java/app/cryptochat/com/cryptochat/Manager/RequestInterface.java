@@ -1,9 +1,7 @@
 package app.cryptochat.com.cryptochat.Manager;
 
 import java.util.HashMap;
-import java.util.List;
 
-import app.cryptochat.com.cryptochat.Models.CipherMessageResponse;
 import app.cryptochat.com.cryptochat.Models.СryptoModel;
 import io.reactivex.Observable;
 import retrofit2.http.Field;
@@ -35,5 +33,8 @@ public interface RequestInterface {
 
     @GET("chat_messages/chat_list")
     Observable<СryptoModel> fetchChatList(@Query("identifier") String identifier, @Query("data") String data);
+
+    @GET("users")
+    Observable<СryptoModel> searchUser(@Query("identifier") String identifier, @Query("data") String data);
 
 }

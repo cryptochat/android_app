@@ -20,15 +20,6 @@ public class MyUserModel {
     private UserField userField;
     private UserField stringData;
 
-    public MyUserModel(String uuid, String email, String username, String first_name, String last_name, String token) {
-        this.uuid = uuid;
-        this.email = email;
-        this.username = username;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.token = token;
-    }
-
     public MyUserModel(MyUserModelRealm myUserModelRealm){
         this.uuid = myUserModelRealm.getUUID();
         this.email = myUserModelRealm.getEmail();

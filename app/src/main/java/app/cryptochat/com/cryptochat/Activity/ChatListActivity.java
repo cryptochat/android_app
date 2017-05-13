@@ -2,24 +2,23 @@ package app.cryptochat.com.cryptochat.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import app.cryptochat.com.cryptochat.Manager.APIManager;
 import app.cryptochat.com.cryptochat.Manager.AuthManager;
 import app.cryptochat.com.cryptochat.Manager.CryptoManager;
+import app.cryptochat.com.cryptochat.Manager.RealmDataManager;
 import app.cryptochat.com.cryptochat.Manager.RequestInterface;
-import app.cryptochat.com.cryptochat.Manager.TransitionManager;
 import app.cryptochat.com.cryptochat.Manager.TransportStatus;
 import app.cryptochat.com.cryptochat.Models.ChatModel;
-import app.cryptochat.com.cryptochat.Models.CipherMessageResponse;
 import app.cryptochat.com.cryptochat.Models.CryptoKeyPairModel;
 import app.cryptochat.com.cryptochat.Models.MyUserModel;
 import app.cryptochat.com.cryptochat.Models.UserModel;
@@ -29,36 +28,29 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-import static app.cryptochat.com.cryptochat.Manager.TransportStatus.TransportStatusSuccess;
-
 public class ChatListActivity extends AppCompatActivity {
     private CryptoManager cryptoManager = new CryptoManager();
-    private UserModel userModel;
-    private TransitionManager transitionManager;
+    private RealmDataManager _realmDataManager = new RealmDataManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
 
-        transitionManager = new TransitionManager();
+        AuthManager authManager = new AuthManager();
+        MyUserModel myUserModel = authManager.getMyUser();
 
-        getChatList("tm013dClMglZbsgSoXGU5QbCTVo0xjFKVEouzxX6_RY");
+//        ArrayList<ChatModel> chatList = _realmDataManager.getChatList();
+
+        getChatList(myUserModel.getToken());
+
     }
 
     public void getChatList(String token) {
         Consumer<TransportStatus> hundlerResponse = null;
         CryptoKeyPairModel model = cryptoManager.getCryptoKeyPairModel();
-        AuthManager authManager = new AuthManager();
-        MyUserModel userModel = authManager.getMyUser();
-        _getChatList(userModel.getToken(), "76c93ee0-20e3-4340-ab7b-ef1c2371dcda", hundlerResponse);
+        _getChatList(token, model.get_identifier(), hundlerResponse);
     }
-
-
-    // 1. получить данные
-    // 2. сохранить в realm
-    // 3. всегда выдавать данные из realm
-
 
 
     private void _getChatList(String token, String identifier, Consumer<TransportStatus> status) {
@@ -75,34 +67,47 @@ public class ChatListActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(cryptoModel -> {
-
                     cryptoManager.decrypt(cryptoModel.getCipherMessage());
+                    List<LinkedTreeMap> chatList = (List<LinkedTreeMap>) cryptoModel.getCipherMessage().get("chats");
 
+                    for(LinkedTreeMap chats : chatList) {
+                        String lastMessage = (String) chats.get("last_message");
+                        boolean isRead = (boolean) chats.get("is_read");
+                        boolean fromMe = (boolean) chats.get("from_me");
 
-//                    CipherMessageResponse.CipherMessageModel cipherMessageModel = cipherMessageResponse.getCipherMessage();
-//                    ArrayList<CipherMessageResponse.ChatResponse> chatResponses = cipherMessageModel.getChats();
-//
-//                    ArrayList<UserModel> arrayUsers = new ArrayList<>();
-//
-//                    for (int i = 0; i < chatResponses.size(); i++) {
-//                        CipherMessageResponse.Interlocutor interlocutor = chatResponses.get(i).getInterlocutor();
-//                        userModel = new UserModel(interlocutor.getId(),
-//                                                  interlocutor.getUsername(),
-//                                                  interlocutor.getFirstName(),
-//                                                  interlocutor.getLastName());
-//                        transitionManager.saveUser(userModel);
-//                    }
-//                    arrayUsers.add(userModel);
+                        HashMap map = new HashMap();
+                        map.put("last_message", lastMessage);
+                        map.put("is_read", isRead);
+                        map.put("from_me", fromMe);
 
-//
-//                    status.accept(TransportStatusSuccess);
-//                }, (Throwable e) -> {
-//                    status.accept(TransportStatus.TransportStatusDefault.getStatus(e));
+                        String json = new Gson().toJson(map);
+
+                        UserModel userModel = new Gson().fromJson(chats.get("interlocutor").toString(), UserModel.class);
+                        _saveUser(userModel);
+
+                        ChatModel chatModel = new Gson().fromJson(json, ChatModel.class);
+                        _saveChat(chatModel);
+                    }
+
                 },(Throwable e) -> {
                     Logger.l(e.toString());
                 });
     }
 
+    private void _saveChat(ChatModel chatModel) {
+        _realmDataManager.createChat(
+                chatModel.getLastMessage(),
+                chatModel.isRead(),
+                chatModel.isFromMe());
+    }
+
+    private void _saveUser(UserModel userModel) {
+        _realmDataManager.createUser(
+                userModel.getId(),
+                userModel.getUserName(),
+                userModel.getFirstName(),
+                userModel.getLastName());
+    }
 
 
 

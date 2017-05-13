@@ -12,16 +12,17 @@ public class UserModelRealm extends RealmObject {
     private String username;
     private String first_name;
     private String last_name;
-    private String token;
+    private boolean is_online;
 
     public UserModelRealm() {
     }
 
-    UserModelRealm(int id, String username, String first_name, String last_name) {
+    UserModelRealm(int id, String username, String first_name, String last_name, boolean is_online) {
         this.id = id;
         this.username = username;
         this.first_name = first_name;
         this.last_name = last_name;
+        this.is_online = is_online;
     }
 
     public int getId() {
@@ -56,11 +57,11 @@ public class UserModelRealm extends RealmObject {
         this.last_name = last_name;
     }
 
-    public String getToken() {
-        return token;
+    public boolean isOnline() {
+        return is_online;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setIsOnline(boolean is_online) {
+        this.is_online = is_online;
     }
 }

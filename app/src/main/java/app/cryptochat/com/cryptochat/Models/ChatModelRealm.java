@@ -1,24 +1,27 @@
 package app.cryptochat.com.cryptochat.Models;
 
-import com.google.gson.annotations.SerializedName;
+import io.realm.RealmList;
+import io.realm.RealmObject;
 
 /**
- * Created by amudarisova on 10.05.17.
+ * Created by amudarisova on 13.05.17.
  */
 
-public class ChatModel {
+public class ChatModelRealm extends RealmObject{
 
-    @SerializedName("last_message")
     private String lastMessage;
-    @SerializedName("is_read")
     private boolean isRead;
-    @SerializedName("from_me")
     private boolean fromMe;
+    private int userId;
 
-    public ChatModel(ChatModelRealm chatModelRealm) {
-        this.lastMessage = chatModelRealm.getLastMessage();
-        this.isRead = chatModelRealm.isRead();
-        this.fromMe = chatModelRealm.isFromMe();
+    public ChatModelRealm() {
+    }
+
+    ChatModelRealm(String lastMessage, boolean isRead, boolean fromMe, int userId) {
+        this.lastMessage = lastMessage;
+        this.isRead = isRead;
+        this.fromMe = fromMe;
+        this.userId = userId;
     }
 
     public String getLastMessage() {
@@ -45,4 +48,11 @@ public class ChatModel {
         this.fromMe = fromMe;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 }
