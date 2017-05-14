@@ -36,8 +36,6 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
         ListView listView = (ListView) findViewById(R.id.listView);
         SearchUserAdapter searchUserAdapter = new SearchUserAdapter(this, userViewModelses);
         listView.setAdapter(searchUserAdapter);
-
-
     }
 
     @Override

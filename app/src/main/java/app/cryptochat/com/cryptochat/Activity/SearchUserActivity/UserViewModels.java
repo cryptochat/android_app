@@ -5,5 +5,14 @@ package app.cryptochat.com.cryptochat.Activity.SearchUserActivity;
  */
 
 public class UserViewModels {
+    private String urlAvatar;
+    private String fullName;
 
+    public String getUrlAvatar() {
+        return urlAvatar;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
 }

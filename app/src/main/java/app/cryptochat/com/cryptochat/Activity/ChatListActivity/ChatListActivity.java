@@ -11,9 +11,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +46,7 @@ public class ChatListActivity extends AppCompatActivity  {
     private CryptoManager cryptoManager = new CryptoManager();
     ListView listView;
     ArrayList<ChatListViewModel> userModels = new ArrayList<>();
+    ArrayList<ChatModel> chatModels = new ArrayList<>();
     ChatListAdapter chatListAdapter;
     SearchView searchView;
     ChatManager chatManager = new ChatManager();
@@ -54,40 +59,41 @@ public class ChatListActivity extends AppCompatActivity  {
 
         AuthManager authManager = new AuthManager();
         MyUserModel myUser = authManager.getMyUser();
+        TextView textViewInformation = (TextView) findViewById(R.id.textViewInfomation);
         chatManager.getChatList(myUser.getToken(), (s, t) -> {
             if(t == TransportStatus.TransportStatusSuccess){
+                chatModels = s;
                 for(ChatModel chatModel : s){
                     ChatListViewModel chatListViewModel = new ChatListViewModel(chatModel);
                     userModels.add(chatListViewModel);
                 }
                 chatListAdapter.notifyDataSetChanged();
+                if(s.size() == 0){
+                    textViewInformation.setText("У Вас пока нет чатов");
+                }else {
+                    textViewInformation.setText("");
+                }
+            }else if (t == TransportStatus.TransportStatusNotInternet){
+                Toast.makeText(this, "Проверьте интернет соединение", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "Возникла ошибка", Toast.LENGTH_SHORT).show();
             }
         });
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                return false;
-            }
-        });
-
-        toolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         createMockData();
-
         listView = (ListView) findViewById(R.id.listView);
         chatListAdapter = new ChatListAdapter(this, userModels);
         listView.setAdapter(chatListAdapter);
 
-        getChatList("tm013dClMglZbsgSoXGU5QbCTVo0xjFKVEouzxX6_RY");
+        listView.setOnItemClickListener((parent, view, position, id) -> startChatForUser(chatModels.get(position).getUserModel().getId()));
+    }
+
+
+    private void startChatForUser(int chatID){
+        //TODO: открытия чата
     }
 
     @Override
@@ -120,66 +126,6 @@ public class ChatListActivity extends AppCompatActivity  {
         startActivity(intent);
         overridePendingTransition(R.anim.transition_fade_in,R.anim.transition_fade_out);
     }
-
-
-    public void getChatList(String token) {
-        Consumer<TransportStatus> hundlerResponse = null;
-        CryptoKeyPairModel model = cryptoManager.getCryptoKeyPairModel();
-        AuthManager authManager = new AuthManager();
-        MyUserModel userModel = authManager.getMyUser();
-        _getChatList(userModel.getToken(), "76c93ee0-20e3-4340-ab7b-ef1c2371dcda", hundlerResponse);
-    }
-
-
-    // 1. получить данные
-    // 2. сохранить в realm
-    // 3. всегда выдавать данные из realm
-
-
-
-    private void _getChatList(String token, String identifier, Consumer<TransportStatus> status) {
-        RequestInterface requestInterface = APIManager.INSTANCE.getRequestInterface();
-        HashMap<String, String> hashMap = new HashMap<String, String>();
-        hashMap.put("token", token);
-
-        // Шифруем данные
-        cryptoManager.encrypt(hashMap);
-
-        JSONObject jsonObject = new JSONObject(hashMap);
-
-        requestInterface.fetchChatList(identifier, jsonObject.toString())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(cryptoModel -> {
-
-                    cryptoManager.decrypt(cryptoModel.getCipherMessage());
-
-
-//                    CipherMessageResponse.CipherMessageModel cipherMessageModel = cipherMessageResponse.getCipherMessage();
-//                    ArrayList<CipherMessageResponse.ChatResponse> chatResponses = cipherMessageModel.getChats();
-//
-//                    ArrayList<UserModel> arrayUsers = new ArrayList<>();
-//
-//                    for (int i = 0; i < chatResponses.size(); i++) {
-//                        CipherMessageResponse.Interlocutor interlocutor = chatResponses.get(i).getInterlocutor();
-//                        userModel = new UserModel(interlocutor.getId(),
-//                                                  interlocutor.getUsername(),
-//                                                  interlocutor.getFirstName(),
-//                                                  interlocutor.getLastName());
-//                        transitionManager.saveUser(userModel);
-//                    }
-//                    arrayUsers.add(userModel);
-
-//
-//                    status.accept(TransportStatusSuccess);
-//                }, (Throwable e) -> {
-//                    status.accept(TransportStatus.TransportStatusDefault.getStatus(e));
-                },(Throwable e) -> {
-                    Logger.l(e.toString());
-                });
-    }
-
-
 
     private void createMockData(){
         for(int i = 0; i < 20; i++){

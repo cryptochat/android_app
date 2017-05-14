@@ -12,4 +12,6 @@
     <string name="search_hint">Поиск пользователя</string>
     <string name="menu_search">Поиск</string>
 
+    <string name="error_no_internet">Проверьте интернет соединение</string>
+
 </resources>

@@ -6,6 +6,7 @@
     android:id="@+id/toolbar"
     android:background="?attr/colorPrimary"
     android:label=""
+    android:title=""
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:titleTextColor="@android:color/white">
 
