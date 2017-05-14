@@ -14,6 +14,7 @@ public class ChatModel {
     private boolean isRead;
     @SerializedName("from_me")
     private boolean fromMe;
+    private UserModel userModel;
 
     public ChatModel(ChatModelRealm chatModelRealm) {
         this.lastMessage = chatModelRealm.getLastMessage();
@@ -45,4 +46,11 @@ public class ChatModel {
         this.fromMe = fromMe;
     }
 
+    public UserModel getUserModel() {
+        return userModel;
+    }
+
+    public void setUserModel(UserModel userModel) {
+        this.userModel = userModel;
+    }
 }

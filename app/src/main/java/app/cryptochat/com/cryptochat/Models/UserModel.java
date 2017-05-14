@@ -59,5 +59,13 @@ public class UserModel {
     public void setLastName(String last_name) {
         this.lastName = last_name;
     }
+
+    public String getIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(String isOnline) {
+        this.isOnline = isOnline;
+    }
 }
 

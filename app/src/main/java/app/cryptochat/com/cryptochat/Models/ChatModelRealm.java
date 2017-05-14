@@ -55,4 +55,5 @@ public class ChatModelRealm extends RealmObject{
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
 }
