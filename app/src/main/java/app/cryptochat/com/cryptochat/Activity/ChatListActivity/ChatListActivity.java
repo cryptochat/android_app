@@ -55,11 +55,7 @@ public class ChatListActivity extends AppCompatActivity  {
 
         AuthManager authManager = new AuthManager();
         MyUserModel myUser = authManager.getMyUser();
-
-        userManager.searchUser(myUser.getToken(), "Mar", (s, t) -> {
-
-        });
-
+        
         chatManager.getChatList(myUser.getToken(), (s, t) -> {
             if(t == TransportStatus.TransportStatusSuccess){
                 for(ChatModel chatModel : s){
