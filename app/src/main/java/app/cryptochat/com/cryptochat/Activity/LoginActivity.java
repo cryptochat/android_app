@@ -1,24 +1,20 @@
 package app.cryptochat.com.cryptochat.Activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
-import java.util.ArrayList;
-
+import app.cryptochat.com.cryptochat.Activity.ChatListActivity.ChatListActivity;
 import app.cryptochat.com.cryptochat.Manager.AuthManager;
-import app.cryptochat.com.cryptochat.Manager.TransitionManager;
-import app.cryptochat.com.cryptochat.Models.UserModel;
+import app.cryptochat.com.cryptochat.Manager.TransportStatus;
 import app.cryptochat.com.cryptochat.R;
-import app.cryptochat.com.cryptochat.Tools.Logger;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 
 import static android.text.TextUtils.isEmpty;
 import static android.util.Patterns.EMAIL_ADDRESS;
@@ -34,6 +30,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Переходим на следующий экран, если авторизованы
+        AuthManager authManager = new AuthManager();
+        if(authManager.getMyUser() != null){
+            startChatListActivity();
+        }
 
         _email      = (EditText) findViewById(R.id.edit_email);
         _password   = (EditText) findViewById(R.id.edit_password);
@@ -54,13 +56,23 @@ public class LoginActivity extends AppCompatActivity {
 
         _combineLatestEvents();
 
+
+
+    }
+
+    private void startChatListActivity(){
+        Intent intent = new Intent(this, ChatListActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 
     private void authUser(String login, String password){
         AuthManager authManager = new AuthManager();
         authManager.authUser(login, password, (s)->{
-
+            if(s == TransportStatus.TransportStatusSuccess){
+                startChatListActivity();
+            }
         });
     }
 

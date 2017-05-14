@@ -1,21 +1,27 @@
 package app.cryptochat.com.cryptochat.Models;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by romankov on 17.04.17.
  */
 
 public class СryptoModel {
-    private HashMap<String, String> data;
+    @SerializedName("cipher_message")
+    private HashMap cipherMessage;
+
     private String identifier;
 
-    public HashMap<String, String> getData() {
-        return data;
+    public HashMap getCipherMessage() {
+        return cipherMessage;
     }
 
-    public void setData(HashMap<String, String> data) {
-        this.data = data;
+    public void setCipherMessage(HashMap cipherMessage) {
+        this.cipherMessage = cipherMessage;
     }
 
     public String getIdentifier() {
