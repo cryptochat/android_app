@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -14,27 +13,37 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import app.cryptochat.com.cryptochat.Manager.AuthManager;
+import app.cryptochat.com.cryptochat.Manager.TransportStatus;
+import app.cryptochat.com.cryptochat.Manager.UserManager;
+import app.cryptochat.com.cryptochat.Models.UserModel;
 import app.cryptochat.com.cryptochat.R;
 
 public class SearchUserActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private String query;
 
-    ArrayList<UserViewModels> userViewModelses = new ArrayList<>();
+    ArrayList <UserViewModel>userViewModelses = new ArrayList<>();
+    UserManager userManager = new UserManager();
+    String token;
+    SearchUserAdapter searchUserAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_user_result);
+
+        AuthManager authManager = new AuthManager();
+        token = authManager.getMyUser().getToken();
+
+
         Intent intent = getIntent();
         query = intent.getStringExtra("q");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
         createMockData();
         ListView listView = (ListView) findViewById(R.id.listView);
-        SearchUserAdapter searchUserAdapter = new SearchUserAdapter(this, userViewModelses);
+        searchUserAdapter = new SearchUserAdapter(this, userViewModelses);
         listView.setAdapter(searchUserAdapter);
     }
 
@@ -66,8 +75,8 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
 
     private void createMockData(){
         for(int i = 0; i < 10; i++){
-            UserViewModels userViewModels = new UserViewModels();
-            userViewModelses.add(userViewModels);
+//            UserViewModel userViewModel = new UserViewModel(null);
+//            userViewModelses.add(userViewModel);
         }
     }
 
@@ -85,6 +94,27 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
             finish();
             overridePendingTransition(R.anim.transition_fade_in,R.anim.transition_fade_out);
         }
+
+        userManager.searchUser(token, newText, (d, s) -> {
+            if(s == TransportStatus.TransportStatusSuccess){
+                userViewModelses.clear();
+                userViewModelses.addAll(createViewModel(d));
+                searchUserAdapter.notifyDataSetChanged();
+            }else{
+
+            }
+        });
+
         return false;
+    }
+
+
+    private ArrayList<UserViewModel> createViewModel(ArrayList<UserModel> userModels){
+        ArrayList<UserViewModel> userViewModels = new ArrayList<>();
+        for(UserModel userModel : userModels){
+            UserViewModel userViewModel = new UserViewModel(userModel);
+            userViewModels.add(userViewModel);
+        }
+        return userViewModels;
     }
 }

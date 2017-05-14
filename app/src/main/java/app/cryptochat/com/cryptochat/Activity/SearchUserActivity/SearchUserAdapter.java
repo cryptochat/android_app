@@ -1,6 +1,5 @@
 package app.cryptochat.com.cryptochat.Activity.SearchUserActivity;
 
-import android.app.LauncherActivity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,11 +23,11 @@ import app.cryptochat.com.cryptochat.Tools.Tools;
 
 public class SearchUserAdapter extends BaseAdapter {
 
-    private ArrayList<UserViewModels> userViewModelses;
+    private ArrayList<UserViewModel> userViewModelses;
     private LayoutInflater layoutInflater;
     private Context context;
 
-    SearchUserAdapter(Context context, ArrayList<UserViewModels> userModels){
+    SearchUserAdapter(Context context, ArrayList<UserViewModel> userModels){
         this.userViewModelses = userModels;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = context;
@@ -55,22 +54,22 @@ public class SearchUserAdapter extends BaseAdapter {
         if(view == null){
             view = layoutInflater.inflate(R.layout.user_list_search, parent, false);
         }
-        UserViewModels userViewModels = userViewModelses.get(position);
+        UserViewModel userViewModel = userViewModelses.get(position);
         ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
-        if(userViewModels.getUrlAvatar() == null) {
+        if(userViewModel.getUrlAvatar() == null) {
             // Image User
             Bitmap userImage = BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_user_default);
             userImage = Tools.getRoundedCornerBitmap(userImage, userImage.getWidth() / 2);
             imageView.setImageBitmap(userImage);
         }else{
             Picasso.with(context)
-                    .load(userViewModels.getUrlAvatar())
+                    .load(userViewModel.getUrlAvatar())
                     .placeholder(R.mipmap.image_user_default)
                     .into(imageView);
         }
         // User Name
         TextView textViewName = (TextView) view.findViewById(R.id.textViewName);
-        textViewName.setText(userViewModels.getFullName());
+        textViewName.setText(userViewModel.getFullName());
 
         return view;
     }
