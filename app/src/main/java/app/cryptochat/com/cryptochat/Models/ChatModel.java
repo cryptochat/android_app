@@ -2,7 +2,9 @@ package app.cryptochat.com.cryptochat.Models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by amudarisova on 10.05.17.
@@ -17,7 +19,7 @@ public class ChatModel {
     @SerializedName("from_me")
     private boolean fromMe;
     @SerializedName("created_at")
-    private Double createdAt;
+    private double createdAt;
     private UserModel userModel;
 
 //    public ChatModel(ChatModelRealm chatModelRealm) {
@@ -51,16 +53,20 @@ public class ChatModel {
         this.fromMe = fromMe;
     }
 
-    public Double getCreatedAt() {
+    public double getCreatedAt() {
         return createdAt;
     }
 
-    public Date getDate(long createdAt) {
-        Date time = new Date(createdAt * 1000);
-        return time;
+    public String getDate(double createdAt) {
+        long timeStamp = (long) createdAt * 1000;
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String formattedTime = sdf.format(timeStamp);
+
+        return formattedTime;
     }
 
-    public void setCreatedAt(Double createdAt) {
+    public void setCreatedAt(double createdAt) {
         this.createdAt = createdAt;
     }
 

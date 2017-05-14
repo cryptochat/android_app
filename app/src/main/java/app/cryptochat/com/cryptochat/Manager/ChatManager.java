@@ -51,7 +51,7 @@ public class ChatManager {
                         String lastMessage = (String) chats.get("last_message");
                         boolean isRead = (boolean) chats.get("is_read");
                         boolean fromMe = (boolean) chats.get("from_me");
-                        Double createdAt = (Double) chats.get("created_at");
+                        double createdAt = (double) chats.get("created_at");
 
                         HashMap map = new HashMap();
                         map.put("last_message", lastMessage);
