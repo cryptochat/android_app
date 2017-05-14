@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
+import app.cryptochat.com.cryptochat.Activity.ChatListActivity.ChatListActivity;
 import app.cryptochat.com.cryptochat.Manager.AuthManager;
 import app.cryptochat.com.cryptochat.Manager.TransportStatus;
 import app.cryptochat.com.cryptochat.R;

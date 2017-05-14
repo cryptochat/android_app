@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Cryptochat</string>
+    <string name="app_name">Wishbyte</string>
 
     <!-- Authorization -->
     <string name="enter_email">Введите email</string>
@@ -9,5 +9,7 @@
     <!-- Error message -->
     <string name="invalid_email">Пожалуйста, введите корректный адрес электронной почты.</string>
     <string name="invalid_password">Пожалуйста, введите не меньше 6 символов.</string>
+    <string name="search_hint">Поиск пользователя</string>
+    <string name="menu_search">Поиск</string>
 
 </resources>
