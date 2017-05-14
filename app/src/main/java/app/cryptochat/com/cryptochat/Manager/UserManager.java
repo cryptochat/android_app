@@ -2,9 +2,11 @@ package app.cryptochat.com.cryptochat.Manager;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +39,6 @@ public class UserManager {
         cryptoManager.encrypt(hashMap);
 
         JSONObject jsonObject = new JSONObject(hashMap);
-        final ArrayList<UserModel> userList = new ArrayList<>();
         requestInterface.searchUser(identifier, jsonObject.toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -45,12 +46,14 @@ public class UserManager {
                     cryptoManager.decrypt(cryptoModel.getCipherMessage());
 
                     List<LinkedTreeMap> users = (List<LinkedTreeMap>) cryptoModel.getCipherMessage().get("users");
-                    UserModel userModel = new Gson().fromJson(users.toString(), UserModel.class);
-                    userList.add(userModel);
+                    Type userListType = new TypeToken<ArrayList<UserModel>>(){}.getType();
+
+                    ArrayList<UserModel> userList = new ArrayList<>();
+                    userList = new Gson().fromJson(users.toString(), userListType);
 
                     response.accept(userList, TransportStatus.TransportStatusSuccess);
                 },(Throwable e) -> {
-                    response.accept(userList, TransportStatus.TransportStatusDefault.getStatus(e));
+                    response.accept(null, TransportStatus.TransportStatusDefault.getStatus(e));
                 });
     }
 

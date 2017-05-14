@@ -25,12 +25,12 @@ public class ChatManager {
     private CryptoManager cryptoManager = new CryptoManager();
     private RealmDataManager _realmDataManager = new RealmDataManager();
 
-    public void getChatList(String token, Consumer<ArrayList,TransportStatus> response) {
+    public void getChatList(String token, Consumer<ArrayList<ChatModel>,TransportStatus> response) {
         CryptoKeyPairModel model = cryptoManager.getCryptoKeyPairModel();
         _getChatList(token, model.get_identifier(), response);
     }
 
-    private void _getChatList(String token, String identifier, Consumer<ArrayList,TransportStatus> response) {
+    private void _getChatList(String token, String identifier, Consumer<ArrayList<ChatModel>,TransportStatus> response) {
         RequestInterface requestInterface = APIManager.INSTANCE.getRequestInterface();
         HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("token", token);
@@ -64,7 +64,6 @@ public class ChatManager {
                         UserModel userModel = new Gson().fromJson(chats.get("interlocutor").toString(), UserModel.class);
                         ChatModel chatModel = new Gson().fromJson(json, ChatModel.class);
                         chatModel.setUserModel(userModel);
-
                         chatModelList.add(chatModel);
                     }
                     // Сюда передать массив ChatModel, внутри которых должна быть UserModel
