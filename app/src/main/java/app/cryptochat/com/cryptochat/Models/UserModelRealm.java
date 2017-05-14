@@ -57,7 +57,7 @@ public class UserModelRealm extends RealmObject {
         this.last_name = last_name;
     }
 
-    public boolean isOnline() {
+    public boolean getIsOnline() {
         return is_online;
     }
 

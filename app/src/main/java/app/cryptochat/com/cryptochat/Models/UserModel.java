@@ -2,8 +2,6 @@ package app.cryptochat.com.cryptochat.Models;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.HashMap;
-
 /**
  * Created by amudarisova on 09.05.17.
  */
@@ -18,14 +16,15 @@ public class UserModel {
     @SerializedName("last_name")
     private String lastName;
     @SerializedName("is_online")
-    private String isOnline;
+    private boolean isOnline;
+    private Avatar avatar;
 
     public UserModel(UserModelRealm userModelRealm) {
         this.id = userModelRealm.getId();
         this.userName = userModelRealm.getUserName();
         this.firstName = userModelRealm.getFirstName();
         this.lastName = userModelRealm.getLastName();
-        this.isOnline = userModelRealm.getLastName();
+        this.isOnline = userModelRealm.getIsOnline();
     }
 
     public int getId() {
@@ -60,12 +59,32 @@ public class UserModel {
         this.lastName = last_name;
     }
 
-    public String getIsOnline() {
+    public boolean getIsOnline() {
         return isOnline;
     }
 
-    public void setIsOnline(String isOnline) {
+    public void setIsOnline(boolean isOnline) {
         this.isOnline = isOnline;
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
+    }
+
+    public class Avatar {
+        private String url;
+
+        public Avatar(String url) {
+            this.url = url;
+        }
+
+        public String getUrl() {
+            return url;
+        }
     }
 }
 

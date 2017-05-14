@@ -2,6 +2,8 @@ package app.cryptochat.com.cryptochat.Models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 /**
  * Created by amudarisova on 10.05.17.
  */
@@ -14,13 +16,16 @@ public class ChatModel {
     private boolean isRead;
     @SerializedName("from_me")
     private boolean fromMe;
+    @SerializedName("created_at")
+    private Double createdAt;
     private UserModel userModel;
 
-    public ChatModel(ChatModelRealm chatModelRealm) {
-        this.lastMessage = chatModelRealm.getLastMessage();
-        this.isRead = chatModelRealm.isRead();
-        this.fromMe = chatModelRealm.isFromMe();
-    }
+//    public ChatModel(ChatModelRealm chatModelRealm) {
+//        this.lastMessage = chatModelRealm.getLastMessage();
+//        this.isRead = chatModelRealm.isRead();
+//        this.fromMe = chatModelRealm.isFromMe();
+//        this.createdAt = chatModelRealm.getCreatedAt();
+//    }
 
     public String getLastMessage() {
         return lastMessage;
@@ -44,6 +49,19 @@ public class ChatModel {
 
     public void setFromMe(boolean fromMe) {
         this.fromMe = fromMe;
+    }
+
+    public Double getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getDate(long createdAt) {
+        Date time = new Date(createdAt * 1000);
+        return time;
+    }
+
+    public void setCreatedAt(Double createdAt) {
+        this.createdAt = createdAt;
     }
 
     public UserModel getUserModel() {
