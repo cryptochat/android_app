@@ -12,16 +12,18 @@ public class ChatModelRealm extends RealmObject{
     private String lastMessage;
     private boolean isRead;
     private boolean fromMe;
+    private long createdAt;
     private int userId;
 
     public ChatModelRealm() {
     }
 
-    ChatModelRealm(String lastMessage, boolean isRead, boolean fromMe, int userId) {
+    ChatModelRealm(String lastMessage, boolean isRead, boolean fromMe, long createdAt, int userId) {
         this.lastMessage = lastMessage;
         this.isRead = isRead;
         this.fromMe = fromMe;
         this.userId = userId;
+        this.createdAt = createdAt;
     }
 
     public String getLastMessage() {
@@ -56,4 +58,11 @@ public class ChatModelRealm extends RealmObject{
         this.userId = userId;
     }
 
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
+    }
 }

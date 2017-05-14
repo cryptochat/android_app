@@ -1,5 +1,6 @@
 package app.cryptochat.com.cryptochat.Activity.ChatListActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -90,12 +91,12 @@ public class ChatListAdapter extends BaseAdapter {
         View viewStatus = (View)view.findViewById(R.id.viewStatus);
         ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
         if(chatListViewModel.isOnline()){
-            drawable.getPaint().setColor(context.getColor(R.color.colorUserOnline));
+//            drawable.getPaint().setColor(context.getColor(R.color.colorUserOnline));
         }else{
-            drawable.getPaint().setColor(context.getColor(R.color.colorUserOffline));
+//            drawable.getPaint().setColor(context.getColor(R.color.colorUserOffline));
         }
 
-        viewStatus.setBackground(drawable);
+//        viewStatus.setBackground(drawable);
 
         return view;
     }

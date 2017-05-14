@@ -109,21 +109,4 @@ public class RealmDataManager {
             chatModelRealm.setUserId(_userModelRealm.getId());
         });
     }
-
-
-    /**
-     * Получение списка чатов
-     * @return
-     */
-    public ArrayList<ChatModel> getChatList() {
-        RealmResults<ChatModelRealm> results = _realm.where(ChatModelRealm.class).findAll();
-        ArrayList<ChatModel> chatList = new ArrayList<>();
-
-        for (ChatModelRealm modelRealm : results) {
-            ChatModel chatModel = new ChatModel(modelRealm);
-            chatList.add(chatModel);
-        }
-        return chatList;
-    }
-
 }
