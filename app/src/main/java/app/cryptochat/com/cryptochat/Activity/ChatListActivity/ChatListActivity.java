@@ -22,6 +22,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import app.cryptochat.com.cryptochat.Activity.ChatActivity.ChatActivity;
 import app.cryptochat.com.cryptochat.Activity.SearchUserActivity.SearchUserActivity;
 import app.cryptochat.com.cryptochat.Manager.APIManager;
 import app.cryptochat.com.cryptochat.Manager.AuthManager;
@@ -56,7 +57,6 @@ public class ChatListActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
 
-
         AuthManager authManager = new AuthManager();
         MyUserModel myUser = authManager.getMyUser();
         TextView textViewInformation = (TextView) findViewById(R.id.textViewInfomation);
@@ -87,13 +87,14 @@ public class ChatListActivity extends AppCompatActivity  {
         listView = (ListView) findViewById(R.id.listView);
         chatListAdapter = new ChatListAdapter(this, userModels);
         listView.setAdapter(chatListAdapter);
-
         listView.setOnItemClickListener((parent, view, position, id) -> startChatForUser(chatModels.get(position).getUserModel().getId()));
     }
 
 
     private void startChatForUser(int chatID){
         //TODO: открытия чата
+        Intent intent = new Intent(this, ChatActivity.class);
+        startActivity(intent);
     }
 
     @Override
