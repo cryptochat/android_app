@@ -1,5 +1,7 @@
 package app.cryptochat.com.cryptochat.Manager;
 
+import com.google.gson.JsonObject;
+
 import java.util.HashMap;
 
 import app.cryptochat.com.cryptochat.Models.СryptoModel;
@@ -36,5 +38,9 @@ public interface RequestInterface {
 
     @GET("users")
     Observable<СryptoModel> searchUser(@Query("identifier") String identifier, @Query("data") String data);
+
+
+    @GET("chat_messages")
+    Observable<JsonObject> fetchHistory(@Query("identifier") String identifier, @Query("data") String data);
 
 }
