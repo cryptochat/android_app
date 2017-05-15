@@ -38,7 +38,7 @@ public class ChatManager {
     private RealmDataManager _realmDataManager = new RealmDataManager();
     WebSocket ws;
 
-    ChatManager(){
+    public ChatManager(){
 //        try {
 //            String wsURL = C
 //            ws = new WebSocketFactory().createSocket("ws://localhost/endpoint");
@@ -106,14 +106,13 @@ public class ChatManager {
         cryptoManager.encrypt(hashMap);
 
         JSONObject jsonObject = new JSONObject(hashMap);
-        ArrayList<ChatModel> chatModelList = new ArrayList<>();
         requestInterface.fetchChatList(identifier, jsonObject.toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(cryptoModel -> {
                     cryptoManager.decrypt(cryptoModel.getCipherMessage());
                     List<LinkedTreeMap> chatList = (List<LinkedTreeMap>) cryptoModel.getCipherMessage().get("chats");
-
+                    ArrayList<ChatModel> chatModelList = new ArrayList<>();
                     for(LinkedTreeMap chats : chatList) {
                         String lastMessage = (String) chats.get("last_message");
                         boolean isRead = (boolean) chats.get("is_read");
@@ -136,7 +135,7 @@ public class ChatManager {
                     // Сюда передать массив ChatModel, внутри которых должна быть UserModel
                     response.accept(chatModelList, TransportStatus.TransportStatusSuccess);
                 },(Throwable e) -> {
-                    response.accept(chatModelList ,TransportStatus.TransportStatusDefault.getStatus(e));
+                    response.accept(null ,TransportStatus.TransportStatusDefault.getStatus(e));
                 });
     }
 

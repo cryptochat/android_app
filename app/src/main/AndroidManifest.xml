@@ -41,7 +41,23 @@
             android:name="io.fabric.ApiKey"
             android:value="8db9608dbd1436120d824b4a87835d2ea3abab0a" />
 
-        <activity android:name=".Activity.ChatActivity.ChatActivity"></activity>
+        <activity android:name=".Activity.ChatActivity.ChatActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <service
+            android:name=".Service.Firebase.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".Service.Firebase.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

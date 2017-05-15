@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import app.cryptochat.com.cryptochat.R;
 
@@ -15,12 +16,12 @@ import app.cryptochat.com.cryptochat.R;
  */
 
 public class ChatAdapter extends BaseAdapter {
-    private ArrayList<ChatViewModel> chatViewModels;
+    private ArrayList<ChatViewModel> chatViewList;
     private LayoutInflater lInflater;
     Context context;
 
-    public ChatAdapter(Context context, ArrayList<ChatViewModel> chatViewModels) {
-        this.chatViewModels = chatViewModels;
+    public ChatAdapter(Context context, ArrayList<ChatViewModel> chatViewList) {
+        this.chatViewList = chatViewList;
         lInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = context;
@@ -28,13 +29,12 @@ public class ChatAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return this.chatViewModels.size();
-
+        return this.chatViewList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return this.chatViewModels.get(position);
+        return this.chatViewList.get(position);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ChatAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        ChatViewModel chatViewModel = chatViewModels.get(position);
+        ChatViewModel chatViewModel = chatViewList.get(position);
 
         if (chatViewModel.getFromMe()) {
             view = lInflater.inflate(R.layout.list_item_message_right, null);
@@ -57,17 +57,27 @@ public class ChatAdapter extends BaseAdapter {
 
         TextView textTime = (TextView) view.findViewById(R.id.textViewTime);
         TextView textMessage = (TextView) view.findViewById(R.id.textViewMessage);
-
-        textTime.setText(chatViewModel.getCreatedAt());
         textMessage.setText(chatViewModel.getMessageText());
 
+        String createdAtTime = null;
+        if(chatViewModel.getCreatedAt() == null) {
+            Long currentTime = System.currentTimeMillis()/1000;
+            String mTime = currentTime.toString();
+            try {
+                createdAtTime = chatViewModel.convertToDate(mTime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
+            createdAtTime = chatViewModel.getCreatedAt();
+        }
 
-
-
-
-
-
+        textTime.setText(createdAtTime);
 
         return view;
+    }
+
+    public void add(ChatViewModel model) {
+        chatViewList.add(0, model);
     }
 }

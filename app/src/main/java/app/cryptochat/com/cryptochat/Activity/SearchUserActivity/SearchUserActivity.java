@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import app.cryptochat.com.cryptochat.Activity.ChatActivity.ChatActivity;
 import app.cryptochat.com.cryptochat.Manager.AuthManager;
 import app.cryptochat.com.cryptochat.Manager.TransportStatus;
 import app.cryptochat.com.cryptochat.Manager.UserManager;
@@ -45,6 +46,9 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
         ListView listView = (ListView) findViewById(R.id.listView);
         searchUserAdapter = new SearchUserAdapter(this, userViewModelses);
         listView.setAdapter(searchUserAdapter);
+        listView.setOnItemClickListener((parent, view, position, id) -> startChatForUser(
+                userViewModelses.get(position).getUserId(),
+                userViewModelses.get(position).getUserName()));
     }
 
     @Override
@@ -116,5 +120,12 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
             userViewModels.add(userViewModel);
         }
         return userViewModels;
+    }
+
+    private void startChatForUser(int userId, String userName){
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("userId", userId);
+        intent.putExtra("userName", userName);
+        startActivity(intent);
     }
 }
