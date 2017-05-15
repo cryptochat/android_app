@@ -7,5 +7,5 @@ package app.cryptochat.com.cryptochat.Tools;
 public class Constants {
     public static boolean isEncrypt = true;
     public static final String UUID = "uuid";
-    public static String URL_SW = "http://wishbyte.org(ws://wishbyte.org/cable";
+    public static String URL_SW = "ws://wishbyte.org/cable";
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 import app.cryptochat.com.cryptochat.Models.CryptoKeyPairModel;
 import app.cryptochat.com.cryptochat.Models.UserModel;
-import app.cryptochat.com.cryptochat.Tools.Consumer;
+import app.cryptochat.com.cryptochat.Tools.ConsumerReponse;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -24,12 +24,12 @@ import io.reactivex.schedulers.Schedulers;
 public class UserManager {
     private CryptoManager cryptoManager = new CryptoManager();
 
-    public void searchUser(String token, String searchText, Consumer<ArrayList<UserModel>, TransportStatus> response) {
+    public void searchUser(String token, String searchText, ConsumerReponse<ArrayList<UserModel>, TransportStatus> response) {
         CryptoKeyPairModel model = cryptoManager.getCryptoKeyPairModel();
         _searchUser(token, model.get_identifier(), searchText, response);
     }
 
-    private void _searchUser(String token, String identifier, String searchText, Consumer<ArrayList<UserModel>, TransportStatus> response) {
+    private void _searchUser(String token, String identifier, String searchText, ConsumerReponse<ArrayList<UserModel>, TransportStatus> response) {
         RequestInterface requestInterface = APIManager.INSTANCE.getRequestInterface();
         HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("token", token);

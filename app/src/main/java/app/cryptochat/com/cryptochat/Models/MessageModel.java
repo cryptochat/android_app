@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by romankov on 14.05.17.
  */
 
+
 public class MessageModel {
 
     private UserModel userModel;
@@ -19,5 +20,13 @@ public class MessageModel {
 
     public void setUserModel(UserModel userModel) {
         this.userModel = userModel;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getText() {
+        return text;
     }
 }

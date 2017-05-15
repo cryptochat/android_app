@@ -1,31 +1,39 @@
 package app.cryptochat.com.cryptochat.Manager;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.internal.LinkedTreeMap;
 import com.neovisionaries.ws.client.WebSocket;
+import com.neovisionaries.ws.client.WebSocketAdapter;
+import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
+import com.neovisionaries.ws.client.WebSocketFrame;
+import com.neovisionaries.ws.client.WebSocketState;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 import app.cryptochat.com.cryptochat.Models.ChatModel;
 import app.cryptochat.com.cryptochat.Models.CryptoKeyPairModel;
 import app.cryptochat.com.cryptochat.Models.MessageModel;
+import app.cryptochat.com.cryptochat.Models.MessageResponse;
 import app.cryptochat.com.cryptochat.Models.UserModel;
-import app.cryptochat.com.cryptochat.Tools.Consumer;
-import app.cryptochat.com.cryptochat.Tools.Logger;
+import app.cryptochat.com.cryptochat.Tools.Constants;
+import app.cryptochat.com.cryptochat.Tools.ConsumerReponse;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -33,31 +41,58 @@ import io.reactivex.schedulers.Schedulers;
  * Created by amudarisova on 14.05.17.
  */
 
+enum MessageType{
+    MessageModelNone,
+    MessageModelCame
+}
+
+interface ChatManagerListener{
+    public void changeState();
+    public void cameMessage(MessageModel messageModel);
+}
+
 public class ChatManager {
-    private CryptoManager cryptoManager = new CryptoManager();
-    private RealmDataManager _realmDataManager = new RealmDataManager();
-    WebSocket ws;
+    public static final ChatManager INSTANCE = new ChatManager();
+    private CryptoManager _cryptoManager;
+    private RealmDataManager _realmDataManager;
+    private WebSocket ws;
+    private String _token;
+    private String _identifier;
+    HashSet<ChatManagerListener> _chatManagerListeners;
+    ChatManagerListener _chatManagerListener;
+    ExecutorService executorServiceWS;
 
     ChatManager(){
-//        try {
-//            String wsURL = C
-//            ws = new WebSocketFactory().createSocket("ws://localhost/endpoint");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        _cryptoManager = new CryptoManager();
+        _realmDataManager = new RealmDataManager();
+        _chatManagerListeners = new HashSet<>();
     }
 
-    public void getChatList(String token, Consumer<ArrayList<ChatModel>,TransportStatus> response) {
-        CryptoKeyPairModel model = cryptoManager.getCryptoKeyPairModel();
+
+    public void setAuth(String token, String identifier){
+        _token = token;
+        _identifier = identifier;
+    }
+
+    public void connectChat(){
+        _connectWS(_token, _identifier);
+    }
+
+    public void sendMessageToUser(MessageModel message){
+        ws.sendText(message.getText());
+    }
+
+    public void getChatList(String token, ConsumerReponse<ArrayList<ChatModel>,TransportStatus> response) {
+        CryptoKeyPairModel model = _cryptoManager.getCryptoKeyPairModel();
         _getChatList(token, model.get_identifier(), response);
     }
 
-    public void getHistoryUser(String token, int userID, int limit, int offset, Consumer<ArrayList<MessageModel>,TransportStatus> response){
-        CryptoKeyPairModel model = cryptoManager.getCryptoKeyPairModel();
+    public void getHistoryUser(String token, int userID, int limit, int offset, ConsumerReponse<ArrayList<MessageModel>,TransportStatus> response){
+        CryptoKeyPairModel model = _cryptoManager.getCryptoKeyPairModel();
         _getHistoryUser(token, userID, limit, offset, model.get_identifier(), response);
     }
 
-    private void _getHistoryUser(String token, int userID, int limit, int offset, String identifier, Consumer<ArrayList<MessageModel>,TransportStatus> response){
+    private void _getHistoryUser(String token, int userID, int limit, int offset, String identifier, ConsumerReponse<ArrayList<MessageModel>,TransportStatus> response){
         RequestInterface requestInterface = APIManager.INSTANCE.getRequestInterface();
         // Шифруем данные
         JSONObject jsonObject = new JSONObject();
@@ -97,13 +132,13 @@ public class ChatManager {
     }
 
 
-        private void _getChatList(String token, String identifier, Consumer<ArrayList<ChatModel>,TransportStatus> response) {
+        private void _getChatList(String token, String identifier, ConsumerReponse<ArrayList<ChatModel>,TransportStatus> response) {
         RequestInterface requestInterface = APIManager.INSTANCE.getRequestInterface();
         HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("token", token);
 
         // Шифруем данные
-        cryptoManager.encrypt(hashMap);
+        _cryptoManager.encrypt(hashMap);
 
         JSONObject jsonObject = new JSONObject(hashMap);
         ArrayList<ChatModel> chatModelList = new ArrayList<>();
@@ -111,7 +146,7 @@ public class ChatManager {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(cryptoModel -> {
-                    cryptoManager.decrypt(cryptoModel.getCipherMessage());
+                    _cryptoManager.decrypt(cryptoModel.getCipherMessage());
                     List<LinkedTreeMap> chatList = (List<LinkedTreeMap>) cryptoModel.getCipherMessage().get("chats");
 
                     for(LinkedTreeMap chats : chatList) {
@@ -139,6 +174,128 @@ public class ChatManager {
                     response.accept(chatModelList ,TransportStatus.TransportStatusDefault.getStatus(e));
                 });
     }
+
+
+    private void addListnerWS(WebSocket ws){
+        ws.addListener(new WebSocketAdapter(){
+            @Override
+            public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception
+            {
+                sendSubscribe();
+            }
+
+            @Override
+            public void onStateChanged(WebSocket websocket, WebSocketState newState) throws Exception
+            {
+            }
+
+            @Override
+            public void onTextMessage(WebSocket websocket, String message) throws Exception {
+
+                MessageType type = messageType(message);
+                switch (type){
+                    case MessageModelCame:
+                        _comeMessage(message);
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onDisconnected(WebSocket websocket,
+                                       WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame,
+                                       boolean closedByServer) throws Exception
+            {
+
+            }
+
+            @Override
+            public void onConnectError(WebSocket websocket, WebSocketException exception) throws Exception
+            {
+                String s = new String();
+            }
+
+            @Override
+            public void onError(WebSocket websocket, WebSocketException cause) throws Exception {
+                super.onError(websocket, cause);
+
+            }
+        });
+    }
+
+
+    private void _connectWS(String token, String identifier){
+
+        if(executorServiceWS != null){
+            return;
+        }
+
+        executorServiceWS = Executors.newSingleThreadExecutor();
+        executorServiceWS.submit(()->{
+            try {
+                String wsURL = Constants.URL_SW + "?identifier=" + identifier + "&" + "token="+token;
+                WebSocketFactory factory = new WebSocketFactory().setConnectionTimeout(10000);
+                ws = factory.createSocket(wsURL);
+                addListnerWS(ws);
+                ws.connect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (WebSocketException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void sendSubscribe(){
+        ws.sendText("{\n" +
+                "    \"command\": \"subscribe\",\n" +
+                "    \"identifier\": \"{\\\"channel\\\":\\\"WsChatChannel\\\"}\"\n" +
+                "}");
+    }
+
+    private void sendMessage(String message, int userID){
+
+        JsonObject jsonData = new JsonObject();
+        jsonData.addProperty("recipient_id", userID);
+        jsonData.addProperty("message", message);
+        jsonData.addProperty("action", "send_message");
+
+        JsonObject jsonIdentifier = new JsonObject();
+        jsonIdentifier.addProperty("channel", "WsChatChannel");
+
+        JsonObject jsonCipherMessage = new JsonObject();
+        jsonCipherMessage.add("data", jsonData);
+
+
+        JsonObject json = new JsonObject();
+        json.addProperty("command",  "message");
+        json.add("identifier", jsonIdentifier);
+        json.add("data", jsonCipherMessage);
+
+        String textMessage = json.toString();
+        ws.sendText(textMessage);
+    }
+
+
+    private MessageType messageType(String json){
+        MessageType type = MessageType.MessageModelNone;
+
+       MessageResponse messageResponse = new Gson().fromJson(json, MessageResponse.class);
+
+        return type;
+    }
+
+    private MessageModel messageModel(String json){
+        //JsonObject jsonObject = new JsonObject(json);
+        //MessageModel messageModel = new Gson().fromJson(json, MessageModel.class);
+        return null;
+    }
+
+    private void _comeMessage(String json){
+        MessageModel message = null;
+        _chatManagerListener.cameMessage(message);
+    }
+
 
 
 

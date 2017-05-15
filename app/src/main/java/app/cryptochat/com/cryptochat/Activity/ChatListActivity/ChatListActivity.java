@@ -49,7 +49,7 @@ public class ChatListActivity extends AppCompatActivity  {
     ArrayList<ChatModel> chatModels = new ArrayList<>();
     ChatListAdapter chatListAdapter;
     SearchView searchView;
-    ChatManager chatManager = new ChatManager();
+    ChatManager chatManager = ChatManager.INSTANCE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
