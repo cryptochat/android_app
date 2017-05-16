@@ -1,6 +1,8 @@
 package app.cryptochat.com.cryptochat.Activity.ChatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import app.cryptochat.com.cryptochat.Manager.AuthManager;
@@ -23,6 +27,7 @@ import app.cryptochat.com.cryptochat.Models.MessageModel;
 import app.cryptochat.com.cryptochat.Models.MyUserModel;
 import app.cryptochat.com.cryptochat.R;
 import app.cryptochat.com.cryptochat.Tools.EndlessScrollListener;
+import app.cryptochat.com.cryptochat.Tools.Tools;
 
 public class ChatActivity extends AppCompatActivity {
     ListView listViewMessages;
@@ -37,6 +42,7 @@ public class ChatActivity extends AppCompatActivity {
     private int limit = 15;
     private int userId;
     private String userName;
+    private String avatarUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,7 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userId = intent.getIntExtra("userId", 0);
         userName = intent.getStringExtra("userName");
+        avatarUrl = intent.getStringExtra("avatarUrl");
 
         MyUserModel myUser = authManager.getMyUser();
         TextView textViewInformation = (TextView) findViewById(R.id.textViewInfomation);
@@ -74,6 +81,18 @@ public class ChatActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         TextView toolbarTitle = (TextView) findViewById(R.id.toolbarTitle);
         toolbarTitle.setText(userName);
+//        ImageView toolbarImage = (ImageView) findViewById(R.id.toolbarImage);
+//        if(avatarUrl == null) {
+//            // Image User
+//            Bitmap userImage = BitmapFactory.decodeResource(getResources(), R.mipmap.image_user_default);
+//            userImage = Tools.getRoundedCornerBitmap(userImage, userImage.getWidth() / 2);
+//            toolbarImage.setImageBitmap(userImage);
+//        }else{
+//            Picasso.with(this)
+//                    .load(avatarUrl)
+//                    .placeholder(R.mipmap.image_user_default)
+//                    .into(toolbarImage);
+//        }
 
         EditText inputMsg = (EditText) findViewById(R.id.inputMsg);
         // Listener EditText

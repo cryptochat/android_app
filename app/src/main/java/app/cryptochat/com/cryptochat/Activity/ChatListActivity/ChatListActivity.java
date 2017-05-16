@@ -86,14 +86,16 @@ public class ChatListActivity extends AppCompatActivity  {
         listView.setAdapter(chatListAdapter);
         listView.setOnItemClickListener((parent, view, position, id) -> startChatForUser(
                 chatModels.get(position).getUserModel().getId(),
-                chatModels.get(position).getUserModel().getUserName()));
+                chatModels.get(position).getUserModel().getUserName(),
+                chatModels.get(position).getUserModel().getAvatar().getUrl()));
     }
 
 
-    private void startChatForUser(int userId, String userName){
+    private void startChatForUser(int userId, String userName, String avatarUrl){
         Intent intent = new Intent(this, ChatActivity.class);
         intent.putExtra("userId", userId);
         intent.putExtra("userName", userName);
+        intent.putExtra("avatarUrl", avatarUrl);
         startActivity(intent);
     }
 

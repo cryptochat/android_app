@@ -81,12 +81,13 @@ public class LoginActivity extends AppCompatActivity {
     private void authUser(String login, String password){
         authManager.authUser(login, password, (s)->{
             if(s == TransportStatus.TransportStatusSuccess){
-                phoneToken = _cryptoProviderData.get(PHONE_TOKEN, null);
-                authManager.sendPhoneToken(authManager.getMyUser().getToken(), phoneToken, typePlatform, (c) -> {
-                    if(s == TransportStatus.TransportStatusSuccess) {
-                        startChatListActivity();
-                    }
-                });
+                startChatListActivity();
+//                phoneToken = _cryptoProviderData.get(PHONE_TOKEN, null);
+//                authManager.sendPhoneToken(authManager.getMyUser().getToken(), phoneToken, typePlatform, (c) -> {
+//                    if(s == TransportStatus.TransportStatusSuccess) {
+//                        startChatListActivity();
+//                    }
+//                });
             }
         });
     }
