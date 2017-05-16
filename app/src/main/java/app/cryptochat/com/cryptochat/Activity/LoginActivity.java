@@ -15,8 +15,10 @@ import org.json.JSONObject;
 import app.cryptochat.com.cryptochat.Activity.ChatListActivity.ChatListActivity;
 import app.cryptochat.com.cryptochat.Manager.AuthManager;
 import app.cryptochat.com.cryptochat.Manager.ChatManager;
+import app.cryptochat.com.cryptochat.Manager.ChatManagerListener;
 import app.cryptochat.com.cryptochat.Manager.CryptoManager;
 import app.cryptochat.com.cryptochat.Manager.TransportStatus;
+import app.cryptochat.com.cryptochat.Models.MessageModel;
 import app.cryptochat.com.cryptochat.Models.MyUserModel;
 import app.cryptochat.com.cryptochat.R;
 import io.reactivex.BackpressureStrategy;
@@ -86,10 +88,21 @@ public class LoginActivity extends AppCompatActivity {
         ChatManager chatManager = ChatManager.INSTANCE;
         chatManager.setAuth(token, cryptoManager.getCryptoKeyPairModel().get_identifier());
         chatManager.connectChat();
+        chatManager.setListner(new ChatManagerListener() {
+            @Override
+            public void changeState() {
+
+            }
+
+            @Override
+            public void cameMessage(MessageModel messageModel) {
+
+            }
+        });
 
        // signal.await();
 
-        // Переходим на следующий экран, если авторизованы
+         //Переходим на следующий экран, если авторизованы
 //        AuthManager authManager = new AuthManager();
 //        if(authManager.getMyUser() != null){
 //            startChatListActivity();

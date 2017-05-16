@@ -48,11 +48,6 @@ enum MessageType{
     MessageModelCame
 }
 
-interface ChatManagerListener{
-    public void changeState();
-    public void cameMessage(MessageModel messageModel);
-}
-
 public class ChatManager {
     public static final ChatManager INSTANCE = new ChatManager();
     private CryptoManager _cryptoManager;
@@ -60,16 +55,18 @@ public class ChatManager {
     private WebSocket ws;
     private String _token;
     private String _identifier;
-    HashSet<ChatManagerListener> _chatManagerListeners;
     ChatManagerListener _chatManagerListener;
     ExecutorService executorServiceWS;
 
     ChatManager(){
         _cryptoManager = new CryptoManager();
         _realmDataManager = new RealmDataManager();
-        _chatManagerListeners = new HashSet<>();
     }
 
+
+    public void setListner(ChatManagerListener listner){
+        _chatManagerListener = listner;
+    }
 
     public void setAuth(String token, String identifier){
         _token = token;
@@ -281,29 +278,12 @@ public class ChatManager {
 
     private MessageType messageType(String json){
         MessageType type = MessageType.MessageModelNone;
-        LinkedHashTreeMap<String, Object> hashMap = new Gson().fromJson(json, LinkedHashTreeMap.class);
-        String message = (String) hashMap.get("message");
-        LinkedHashTreeMap<String, Object> header = new Gson().fromJson(message, LinkedHashTreeMap.class);
-        Object headerMessage =  header.get("header").toString();
-        Object body =  header.get("body").toString();
+        HashMap hashMap = new Gson().fromJson(json, HashMap.class);;
+        MessageResponse response = new Gson().fromJson(hashMap.get("message").toString(), MessageResponse.class);
 
-        HashMap headerMessageMap = (HashMap) new Gson().fromJson((String)headerMessage, HashMap.class);
-        LinkedHashTreeMap<String, Object> bodyMessageMap = (LinkedHashTreeMap<String, Object>) new Gson().fromJson((String)body, LinkedHashTreeMap.class);
-
-
-
-        // LinkedHashTreeMap<String, Object> headerNew = new Gson().fromJson(headerMessage, LinkedHashTreeMap.class);
-
-
-
-
-        // json = json.replaceAll("[\\\\]","");
-//        JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
-//        JsonElement message = jsonObject.get("message");
-//        JsonElement header = message.getAsJsonObject();
-
-
-      //  MessageResponse messageResponse = new Gson().fromJson(json, MessageResponse.class);
+        if(response.getHeader().getMethod_name().equals("confirmation_message")){
+            type = MessageType.MessageModelCame;
+        }
 
 
         return type;
@@ -317,7 +297,15 @@ public class ChatManager {
 
     private void _comeMessage(String json){
         MessageModel message = null;
-        _chatManagerListener.cameMessage(message);
+        HashMap hashMap = new Gson().fromJson(json, HashMap.class);
+        MessageResponse response = new Gson().fromJson(hashMap.get("message").toString(), MessageResponse.class);
+
+        UserModel userModel = new Gson().fromJson(response.getBody().getSender().toString(), UserModel.class);
+        MessageModel messageModel = new MessageModel();
+        String sss = response.getBody().getText();
+        messageModel.setText(sss);
+        messageModel.setUserModel(userModel);
+        _chatManagerListener.cameMessage(messageModel);
     }
 
 
