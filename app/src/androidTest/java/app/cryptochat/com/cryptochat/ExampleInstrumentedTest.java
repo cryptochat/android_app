@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.google.gson.Gson;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -54,18 +56,21 @@ public class ExampleInstrumentedTest {
     public void wsConnect() throws Exception{
         final CountDownLatch signal = new CountDownLatch(1);
 
-        CryptoManager cryptoManager = new CryptoManager();
-        AuthManager authManager = new AuthManager();
-        MyUserModel myUserModel = authManager.getMyUser();
-        String token = authManager.getMyUser().getToken();
+//        CryptoManager cryptoManager = new CryptoManager();
+//        AuthManager authManager = new AuthManager();
+//        MyUserModel myUserModel = authManager.getMyUser();
+//        String token = authManager.getMyUser().getToken();
+//
+//
+//        ChatManager chatManager = ChatManager.INSTANCE;
+//        chatManager.setAuth(token, cryptoManager.getCryptoKeyPairModel().get_identifier());
+//        chatManager.connectChat();
+//
+//        signal.await();
 
-
-        ChatManager chatManager = ChatManager.INSTANCE;
-        chatManager.setAuth(token, cryptoManager.getCryptoKeyPairModel().get_identifier());
-        chatManager.connectChat();
-
-        signal.await();
-
+        String json = "{\"identifier\":\"{\\\"channel\\\":\\\"WsChatChannel\\\"}\",\"message\":\"{\\\"header\\\":{\\\"method_name\\\":\\\"incoming_message\\\"},\\\"body\\\":{\\\"text\\\":\\\"Your message to recipient\\\",\\\"created_at\\\":1494891468,\\\"sender\\\":{\\\"id\\\":2,\\\"first_name\\\":\\\"TestName\\\",\\\"last_name\\\":\\\"Test\\\",\\\"username\\\":\\\"Vvvvv\\\",\\\"avatar\\\":{\\\"url\\\":null,\\\"small\\\":{\\\"url\\\":null},\\\"medium\\\":{\\\"url\\\":null},\\\"big\\\":{\\\"url\\\":null}}}}}\"}";
+        String message = new Gson().fromJson(json, String.class);
+        String message1 = new Gson().fromJson(json, String.class);
 
     }
 }

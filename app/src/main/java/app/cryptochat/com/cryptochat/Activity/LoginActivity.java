@@ -9,9 +9,15 @@ import android.widget.EditText;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import app.cryptochat.com.cryptochat.Activity.ChatListActivity.ChatListActivity;
 import app.cryptochat.com.cryptochat.Manager.AuthManager;
+import app.cryptochat.com.cryptochat.Manager.ChatManager;
+import app.cryptochat.com.cryptochat.Manager.CryptoManager;
 import app.cryptochat.com.cryptochat.Manager.TransportStatus;
+import app.cryptochat.com.cryptochat.Models.MyUserModel;
 import app.cryptochat.com.cryptochat.R;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -30,12 +36,64 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+//
+//        String json = "{\n" +
+//                "    \"identifier\": {\n" +
+//                "        \"channel\": \"WsChatChannel\"\n" +
+//                "    },\n" +
+//                "    \"message\": {\n" +
+//                "        \"header\": {\n" +
+//                "            \"method_name\": \"incoming_message\"\n" +
+//                "        },\n" +
+//                "        \"body\": {\n" +
+//                "            \"created_at\": 1469984626,\n" +
+//                "            \"text\": \"Your message to recipient\",\n" +
+//                "            \"sender\": {\n" +
+//                "                \"id\": 7,\n" +
+//                "                \"first_name\": \"exampleFirstName\",\n" +
+//                "                \"last_name\": \"exampleLastName\",\n" +
+//                "                \"username\": \"exampleUsername\",\n" +
+//                "                \"avatar\": {\n" +
+//                "                    \"url\": \"http://wishbyte.org/uploads/user/6358d754-eb30-49fd-8638-c49dfc579573/avatar/1547cfa9919ecd59ca143be176037082.jpeg\",\n" +
+//                "                    \"small\": {\n" +
+//                "                        \"url\": \"http://wishbyte.org/uploads/user/6358d754-eb30-49fd-8638-c49dfc579573/avatar/small_1547cfa9919ecd59ca143be176037082.jpeg\"\n" +
+//                "                    },\n" +
+//                "                    \"medium\": {\n" +
+//                "                        \"url\": \"http://wishbyte.org/uploads/user/6358d754-eb30-49fd-8638-c49dfc579573/avatar/medium_1547cfa9919ecd59ca143be176037082.jpeg\"\n" +
+//                "                    },\n" +
+//                "                    \"big\": {\n" +
+//                "                        \"url\": \"http://wishbyte.org/uploads/user/6358d754-eb30-49fd-8638-c49dfc579573/avatar/big_1547cfa9919ecd59ca143be176037082.jpeg\"\n" +
+//                "                    }\n" +
+//                "                }\n" +
+//                "            }\n" +
+//                "        }\n" +
+//                "    }\n" +
+//                "}";
+//
+//        try {
+//
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+
+                CryptoManager cryptoManager = new CryptoManager();
+        AuthManager authManager = new AuthManager();
+        MyUserModel myUserModel = authManager.getMyUser();
+        String token = authManager.getMyUser().getToken();
+
+
+        ChatManager chatManager = ChatManager.INSTANCE;
+        chatManager.setAuth(token, cryptoManager.getCryptoKeyPairModel().get_identifier());
+        chatManager.connectChat();
+
+       // signal.await();
 
         // Переходим на следующий экран, если авторизованы
-        AuthManager authManager = new AuthManager();
-        if(authManager.getMyUser() != null){
-            startChatListActivity();
-        }
+//        AuthManager authManager = new AuthManager();
+//        if(authManager.getMyUser() != null){
+//            startChatListActivity();
+//        }
 
         _email      = (EditText) findViewById(R.id.edit_email);
         _password   = (EditText) findViewById(R.id.edit_password);

@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.internal.LinkedHashTreeMap;
 import com.google.gson.internal.LinkedTreeMap;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -279,8 +281,30 @@ public class ChatManager {
 
     private MessageType messageType(String json){
         MessageType type = MessageType.MessageModelNone;
+        LinkedHashTreeMap<String, Object> hashMap = new Gson().fromJson(json, LinkedHashTreeMap.class);
+        String message = (String) hashMap.get("message");
+        LinkedHashTreeMap<String, Object> header = new Gson().fromJson(message, LinkedHashTreeMap.class);
+        Object headerMessage =  header.get("header").toString();
+        Object body =  header.get("body").toString();
 
-       MessageResponse messageResponse = new Gson().fromJson(json, MessageResponse.class);
+        HashMap headerMessageMap = (HashMap) new Gson().fromJson((String)headerMessage, HashMap.class);
+        LinkedHashTreeMap<String, Object> bodyMessageMap = (LinkedHashTreeMap<String, Object>) new Gson().fromJson((String)body, LinkedHashTreeMap.class);
+
+
+
+        // LinkedHashTreeMap<String, Object> headerNew = new Gson().fromJson(headerMessage, LinkedHashTreeMap.class);
+
+
+
+
+        // json = json.replaceAll("[\\\\]","");
+//        JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
+//        JsonElement message = jsonObject.get("message");
+//        JsonElement header = message.getAsJsonObject();
+
+
+      //  MessageResponse messageResponse = new Gson().fromJson(json, MessageResponse.class);
+
 
         return type;
     }
