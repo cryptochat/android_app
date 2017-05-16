@@ -17,7 +17,7 @@ public class UserModel {
     private String lastName;
     @SerializedName("is_online")
     private boolean isOnline;
-    private Avatar avatar;
+//    private Avatar avatar;
 
     public UserModel(UserModelRealm userModelRealm) {
         this.id = userModelRealm.getId();
@@ -67,13 +67,13 @@ public class UserModel {
         this.isOnline = isOnline;
     }
 
-    public Avatar getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(Avatar avatar) {
-        this.avatar = avatar;
-    }
+//    public Avatar getAvatar() {
+//        return avatar;
+//    }
+//
+//    public void setAvatar(Avatar avatar) {
+//        this.avatar = avatar;
+//    }
 
     public class Avatar {
         private String url;

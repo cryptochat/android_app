@@ -13,7 +13,6 @@ public class UserViewModel {
     private int userId;
 
     UserViewModel(UserModel userModel){
-        urlAvatar = userModel.getAvatar().getUrl();
         fullName = userModel.getFirstName() + " " + userModel.getLastName();
         userName = userModel.getUserName();
         userId = userModel.getId();
