@@ -121,7 +121,7 @@ public class ChatActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendMessage(inputMsg.getText().toString());
+                sendMessage(inputMsg.getText().toString(), userId);
                 inputMsg.setText("");
             }
         });
@@ -175,6 +175,7 @@ public class ChatActivity extends AppCompatActivity {
             public void cameMessage(MessageModel messageModel) {
                 chatViewModel = new ChatViewModel(messageModel);
                 chatList.add(chatViewModel);
+                chatList.add(chatList.size(), chatViewModel);
                 chatAdapter.notifyDataSetChanged();
             }
         });
@@ -185,9 +186,11 @@ public class ChatActivity extends AppCompatActivity {
         chatAdapter.notifyDataSetChanged();
     }
 
-    private void sendMessage(String message) {
+    private void sendMessage(String message, int userId) {
         if (message.length() == 0) return;
 
+        chatManager.sendMessage(message, userId);
         addMessage(message, true);
+
     }
 }

@@ -252,7 +252,7 @@ public class ChatManager {
                 "}");
     }
 
-    private void sendMessage(String message, int userID){
+    public void sendMessage(String message, int userID){
 
         JsonObject jsonData = new JsonObject();
         jsonData.addProperty("recipient_id", userID);
