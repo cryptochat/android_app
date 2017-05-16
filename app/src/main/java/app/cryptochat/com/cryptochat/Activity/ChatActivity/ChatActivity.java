@@ -174,7 +174,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void cameMessage(MessageModel messageModel) {
                 chatViewModel = new ChatViewModel(messageModel);
-                chatList.add(chatViewModel);
+                chatList.add(0, chatViewModel);
                 chatAdapter.notifyDataSetChanged();
             }
         });
