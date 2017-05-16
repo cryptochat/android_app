@@ -7,6 +7,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import app.cryptochat.com.cryptochat.Common.ProviderCryptoData.CryptoProviderData;
+import app.cryptochat.com.cryptochat.Common.ProviderCryptoData.ProviderPreferences;
 import app.cryptochat.com.cryptochat.Models.CryptoKeyPairModel;
 import app.cryptochat.com.cryptochat.Models.MyUserModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -60,6 +62,34 @@ public class AuthManager {
                     hundlerResponse.accept(TransportStatus.TransportStatusDefault.getStatus(e));
         });
     }
+
+    public void sendPhoneToken(String token, String phoneToken, String typePlatform, Consumer<TransportStatus> hundlerResponse) {
+        CryptoKeyPairModel model =  cryptoManager.getCryptoKeyPairModel();
+        _sendPhoneToken(token, phoneToken, typePlatform, model.get_identifier(), hundlerResponse);
+    }
+
+    private void _sendPhoneToken(String token, String phoneToken, String typePlatform, String identifier, Consumer<TransportStatus> hundlerResponse) {
+        RequestInterface requestInterface = APIManager.INSTANCE.getRequestInterface();
+        HashMap<String, String> hashMap = new HashMap<String, String>();
+        hashMap.put("token", token);
+        hashMap.put("value", phoneToken);
+        hashMap.put("type", typePlatform);
+
+        // Шифруем данные
+        cryptoManager.encrypt(hashMap);
+
+        JSONObject jsonObject = new JSONObject(hashMap);
+
+        requestInterface.sendPhoneToken(identifier, jsonObject.toString())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    hundlerResponse.accept(TransportStatusSuccess);
+                }, (Throwable e) -> {
+                    hundlerResponse.accept(TransportStatus.TransportStatusDefault.getStatus(e));
+                });
+    }
+
 
     private void _saveUser(MyUserModel myUserModel) {
         _realmDataManager.createMyUser(myUserModel.getUUID(),

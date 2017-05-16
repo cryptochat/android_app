@@ -9,5 +9,8 @@
     <color name="colorUserOnline">#2ecc71</color>
     <color name="colorUserOffline">#e74c3c</color>
 
+    <color name="colorMsgYou">#5eb964</color>
+    <color name="colorMsgFrom">#FF4081</color>
+
 
 </resources>

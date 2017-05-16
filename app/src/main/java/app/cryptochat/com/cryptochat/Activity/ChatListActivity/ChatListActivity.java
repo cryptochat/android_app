@@ -22,6 +22,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import app.cryptochat.com.cryptochat.Activity.ChatActivity.ChatActivity;
 import app.cryptochat.com.cryptochat.Activity.SearchUserActivity.SearchUserActivity;
 import app.cryptochat.com.cryptochat.Manager.APIManager;
 import app.cryptochat.com.cryptochat.Manager.AuthManager;
@@ -39,9 +40,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-
-
-
 public class ChatListActivity extends AppCompatActivity  {
     private CryptoManager cryptoManager = new CryptoManager();
     ListView listView;
@@ -55,7 +53,6 @@ public class ChatListActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
-
 
         AuthManager authManager = new AuthManager();
         MyUserModel myUser = authManager.getMyUser();
@@ -87,13 +84,19 @@ public class ChatListActivity extends AppCompatActivity  {
         listView = (ListView) findViewById(R.id.listView);
         chatListAdapter = new ChatListAdapter(this, userModels);
         listView.setAdapter(chatListAdapter);
-
-        listView.setOnItemClickListener((parent, view, position, id) -> startChatForUser(chatModels.get(position).getUserModel().getId()));
+        listView.setOnItemClickListener((parent, view, position, id) -> startChatForUser(
+                chatModels.get(position).getUserModel().getId(),
+                chatModels.get(position).getUserModel().getUserName(),
+                chatModels.get(position).getUserModel().getAvatar().getUrl()));
     }
 
 
-    private void startChatForUser(int chatID){
-        //TODO: открытия чата
+    private void startChatForUser(int userId, String userName, String avatarUrl){
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("userId", userId);
+        intent.putExtra("userName", userName);
+        intent.putExtra("avatarUrl", avatarUrl);
+        startActivity(intent);
     }
 
     @Override

@@ -58,7 +58,7 @@ public class ChatManager {
     ChatManagerListener _chatManagerListener;
     ExecutorService executorServiceWS;
 
-    ChatManager(){
+    public ChatManager(){
         _cryptoManager = new CryptoManager();
         _realmDataManager = new RealmDataManager();
     }

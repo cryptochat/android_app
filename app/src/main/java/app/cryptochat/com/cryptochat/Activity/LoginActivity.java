@@ -79,34 +79,34 @@ public class LoginActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 
-                CryptoManager cryptoManager = new CryptoManager();
-        AuthManager authManager = new AuthManager();
-        MyUserModel myUserModel = authManager.getMyUser();
-        String token = authManager.getMyUser().getToken();
-
-
-        ChatManager chatManager = ChatManager.INSTANCE;
-        chatManager.setAuth(token, cryptoManager.getCryptoKeyPairModel().get_identifier());
-        chatManager.connectChat();
-        chatManager.setListner(new ChatManagerListener() {
-            @Override
-            public void changeState() {
-
-            }
-
-            @Override
-            public void cameMessage(MessageModel messageModel) {
-
-            }
-        });
+//                CryptoManager cryptoManager = new CryptoManager();
+//        AuthManager authManager = new AuthManager();
+//        MyUserModel myUserModel = authManager.getMyUser();
+//        String token = authManager.getMyUser().getToken();
+//
+//
+//        ChatManager chatManager = ChatManager.INSTANCE;
+//        chatManager.setAuth(token, cryptoManager.getCryptoKeyPairModel().get_identifier());
+//        chatManager.connectChat();
+//        chatManager.setListner(new ChatManagerListener() {
+//            @Override
+//            public void changeState() {
+//
+//            }
+//
+//            @Override
+//            public void cameMessage(MessageModel messageModel) {
+//
+//            }
+//        });
 
        // signal.await();
 
          //Переходим на следующий экран, если авторизованы
-//        AuthManager authManager = new AuthManager();
-//        if(authManager.getMyUser() != null){
-//            startChatListActivity();
-//        }
+        AuthManager authManager = new AuthManager();
+        if(authManager.getMyUser() != null){
+            startChatListActivity();
+        }
 
         _email      = (EditText) findViewById(R.id.edit_email);
         _password   = (EditText) findViewById(R.id.edit_password);

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "74060136496",
+    "firebase_url": "https://wishbyte-d4e7d.firebaseio.com",
+    "project_id": "wishbyte-d4e7d",
+    "storage_bucket": "wishbyte-d4e7d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74060136496:android:98bec17ac05bce95",
+        "android_client_info": {
+          "package_name": "app.cryptochat.com.cryptochat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74060136496-10o038259cbr2hle0vgpe1kq2akt284v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMrzXs-Mmw4x2PVBE7SCrA0nXDe9L6_0g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

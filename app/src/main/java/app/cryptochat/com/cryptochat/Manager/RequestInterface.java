@@ -43,4 +43,8 @@ public interface RequestInterface {
     @GET("chat_messages")
     Observable<JsonObject> fetchHistory(@Query("identifier") String identifier, @Query("data") String data);
 
+    @FormUrlEncoded
+    @POST("users/device_token")
+    Observable<HashMap<String, String>> sendPhoneToken(@Field("identifier") String identifier, @Field("data") String data);
+
 }
