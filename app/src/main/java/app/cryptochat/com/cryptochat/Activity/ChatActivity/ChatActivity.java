@@ -54,7 +54,6 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userId = intent.getIntExtra("userId", 0);
         userName = intent.getStringExtra("userName");
-        avatarUrl = intent.getStringExtra("avatarUrl");
 
         wsConnect();
 
