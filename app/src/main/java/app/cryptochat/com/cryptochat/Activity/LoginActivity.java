@@ -10,8 +10,12 @@ import android.widget.EditText;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import app.cryptochat.com.cryptochat.Activity.ChatListActivity.ChatListActivity;
+import app.cryptochat.com.cryptochat.Common.ProviderCryptoData.CryptoProviderData;
+import app.cryptochat.com.cryptochat.Common.ProviderCryptoData.ProviderPreferences;
 import app.cryptochat.com.cryptochat.Manager.AuthManager;
+import app.cryptochat.com.cryptochat.Manager.CryptoManager;
 import app.cryptochat.com.cryptochat.Manager.TransportStatus;
+import app.cryptochat.com.cryptochat.Models.CryptoKeyPairModel;
 import app.cryptochat.com.cryptochat.R;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -22,9 +26,14 @@ import static android.util.Patterns.EMAIL_ADDRESS;
 public class LoginActivity extends AppCompatActivity {
     private EditText _email, _password;
     private Button _btnLogin;
+    private String phoneToken;
+    private String PHONE_TOKEN = "PHONE_TOKEN";
+    private String typePlatform = "google";
 
     private Flowable<CharSequence> _emailChangeObservable;
     private Flowable<CharSequence> _passwordChangeObservable;
+    private AuthManager authManager = new AuthManager();
+    private CryptoProviderData _cryptoProviderData = new ProviderPreferences();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +41,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // Переходим на следующий экран, если авторизованы
-        AuthManager authManager = new AuthManager();
+        authManager = new AuthManager();
         if(authManager.getMyUser() != null){
+
+
             startChatListActivity();
         }
 
@@ -68,10 +79,14 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void authUser(String login, String password){
-        AuthManager authManager = new AuthManager();
         authManager.authUser(login, password, (s)->{
             if(s == TransportStatus.TransportStatusSuccess){
-                startChatListActivity();
+                phoneToken = _cryptoProviderData.get(PHONE_TOKEN, null);
+                authManager.sendPhoneToken(authManager.getMyUser().getToken(), phoneToken, typePlatform, (c) -> {
+                    if(s == TransportStatus.TransportStatusSuccess) {
+                        startChatListActivity();
+                    }
+                });
             }
         });
     }

@@ -1,4 +1,4 @@
-package app.cryptochat.com.cryptochat.Service.Firebase;
+package app.cryptochat.com.cryptochat.Service;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
